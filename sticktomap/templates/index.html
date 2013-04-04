@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>sticktomap</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
+    <script src="http://yandex.st/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        ymaps.ready(init);
+        var myMap; 
+
+        function addMarker(location) {    
+            var placemark = new ymaps.Placemark(new ymaps.GeoPoint(location.__lng, location.__lat), { draggable: 1 });
+            //координаты добавления метки
+            placemark.name = "";
+            placemark.description = "";
+            myMap.geoObjects.add(placemark);//добавление метки 
+        }
+
+        function init(){ 
+            myMap = new ymaps.Map ("map", {
+                center: [55.76, 37.64],
+                zoom: 7
+            }); 
+            
+            myMap.controls.add('zoomControl');
+            myMap.controls.add('mapTools');
+            myMap.geoObjects.add(
+                new ymaps.Placemark(
+                    [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
+                    {
+                        balloonContentHeader: ymaps.geolocation.country,
+                        balloonContent: ymaps.geolocation.city,
+                        balloonContentFooter: ymaps.geolocation.region
+                    }
+                )
+            );
+
+            //myMap.events.add('click', function (e) {
+              //   addMarker(e.get('coordPosition'));
+            //});
+        }
+    </script>
+</head>
+
+<body>
+    <div id="map" style="width: 600px; height: 400px"></div>
+</body>
+
+</html>
