@@ -7,38 +7,36 @@
     <script src="http://yandex.st/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         ymaps.ready(init);
-        var myMap; 
+        var map; 
 
-        function addMarker(location) {    
-            var placemark = new ymaps.Placemark(new ymaps.GeoPoint(location.__lng, location.__lat), { draggable: 1 });
-            //координаты добавления метки
-            placemark.name = "";
-            placemark.description = "";
-            myMap.geoObjects.add(placemark);//добавление метки 
+        function addPlacemark(location) {    
+            var placemark = new ymaps.Placemark(location);
+            placemark.name = "Ya";
+            placemark.description = "tut!";
+
+            map.geoObjects.add(placemark);
+
+            placemark.events.add('dblclick', function (e) {
+                map.geoObjects.remove(placemark);
+            });
         }
 
         function init(){ 
-            myMap = new ymaps.Map ("map", {
-                center: [55.76, 37.64],
+            map = new ymaps.Map ("map", {
+                center: [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
                 zoom: 7
             }); 
             
-            myMap.controls.add('zoomControl');
-            myMap.controls.add('mapTools');
-            myMap.geoObjects.add(
-                new ymaps.Placemark(
-                    [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
-                    {
-                        balloonContentHeader: ymaps.geolocation.country,
-                        balloonContent: ymaps.geolocation.city,
-                        balloonContentFooter: ymaps.geolocation.region
-                    }
-                )
-            );
+            map.controls.add('zoomControl');
+            map.controls.add('mapTools');
+           
 
-            //myMap.events.add('click', function (e) {
-              //   addMarker(e.get('coordPosition'));
-            //});
+            map.events.add('click', function (e) {
+                 addPlacemark(e.get('coordPosition'));
+            });
+
+
+            
         }
     </script>
 </head>

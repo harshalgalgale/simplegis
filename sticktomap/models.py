@@ -7,4 +7,3 @@ class Stick(models.Model):
     desc = models.CharField(max_length=300)
     lat = models.FloatField(('Latitude'), blank=True, null=True)
     lon = models.FloatField(('Longitude'), blank=True, null=True)
-
