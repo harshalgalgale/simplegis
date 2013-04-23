@@ -1,48 +1,152 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>sticktomap</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
-    <script src="http://yandex.st/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        ymaps.ready(init);
-        var map; 
+{% extends "base.html" %}
 
-        function addPlacemark(location) {    
-            var placemark = new ymaps.Placemark(location);
-            placemark.name = "Ya";
-            placemark.description = "tut!";
+{% block extrahead %}
+{% block title %}{% endblock %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
+<script src="http://yandex.st/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    ymaps.ready(init);
+    var myMap; 
 
-            map.geoObjects.add(placemark);
+    function init() { 
+        myMap = new ymaps.Map ("map", {
+            center: [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
+            zoom: 7
+        }); 
+       
+        
+        {% for placemark in placemarks %}
+ 
+        var myPlacemark = new ymaps.Placemark([{{placemark.lat}},{{placemark.lon}}], {
+            // Свойства
+            iconContent: "{{placemark.name}}", 
+            balloonContent: "{{placemark.desc}}",                 
+        });
 
-            placemark.events.add('dblclick', function (e) {
-                map.geoObjects.remove(placemark);
+        myPlacemark.events.add('dblclick', function (e) {
+            map.geoObjects.remove(myPlace); }) 
+
+        myPlacemark.options.set({
+            hideIconOnBalloonOpen: false,
+        })
+
+        // Добавляем метку на карту
+        myMap.geoObjects.add(myPlacemark);
+        {% endfor %}
+
+        /*
+        var placemarkByID = [];
+        {% for placemark in placemarks %}
+        placemarkByID[{{placemark.id}}] = {
+            name: "{{placemark.name}}",
+            desc: "{{placemark.desc}}",
+            lat: {{placemark.lat}},
+            lng: {{placemark.lon}},
+        };
+        {% endfor %}
+
+        for (var p in placemarkByID) {
+            var myPlacemark = new ymaps.Placemark([{{p.lat}},{{p.lon}}], {
+                // Свойства
+                iconContent: p.name, 
+                balloonContent: p.desc,                 
             });
-        }
 
-        function init(){ 
-            map = new ymaps.Map ("map", {
-                center: [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
-                zoom: 7
-            }); 
+            myPlacemark.events.add('dblclick', function (e) {
+                map.geoObjects.remove(myPlace); }) 
+
+            myPlacemark.options.set({
+                hideIconOnBalloonOpen: false,
+            })
+
+            // Добавляем метку на карту
+            myMap.geoObjects.add(myPlacemark);
+        }*/
+
+        /*
+        $(document).ready(function () {
+            function activatePlacemarks() {
+                // Add waypoint click handler
+                $('.placemark').each(function () {
+                    $(this).click(function() {
+                        
+                    }).hover(
+                        function () {this.className = this.className.replace('OFF', 'ON');},
+                        function () {this.className = this.className.replace('ON', 'OFF');}
+                    );
+                });
+            }
+            activatePlacemarks();
+        });
+        */
+
+        myMap.events.add('click', function (e) {
+            if (!myMap.balloon.isOpen()) {
+
+                var coords = e.get('coordPosition');
+                myMap.balloon.open(coords, {                        
+                    contentBody:   '<div id="menu">\
+                                    {% csrf_token %}\
+                                        <div id="menu_list">\
+                                            <label>Название:</label> <input type="text" class="input-medium" name="icon_text" /><br />\
+                                            <label>Описание:</label> <input type="text" class="input-medium" name="balloon_text" /><br />\
+                                        </div>\
+                                        <button type="submit" class="btn btn-success">Сохранить</button>\
+                                    </div>'
+                });
+                     
+                var myPlacemark = new ymaps.Placemark(coords);
+ 
+                //Сохраняем данные из формы     
+                $('#menu button[type="submit"]').click(function () {
+                    var iconText = $('input[name="icon_text"]').val(),
+                        balloonText = $('input[name="balloon_text"]').val();
             
-            map.controls.add('zoomControl');
-            map.controls.add('mapTools');
-           
+                
+                    //Добавляем метку на карту  
+                    myMap.geoObjects.add(myPlacemark);
 
-            map.events.add('click', function (e) {
-                 addPlacemark(e.get('coordPosition'));
-            });
+                
+                    //Изменяем свойства метки и балуна
+                    myPlacemark.properties.set({
+                        iconContent: iconText,
+                        balloonContent: balloonText,                       
+                    });
+
+                    myPlacemark.options.set({
+                        hideIconOnBalloonOpen: false,
+                    })
+                    
+                    myPlacemark.events.add('dblclick', function (e) {
+                        map.geoObjects.remove(myPlacemark); 
+                    })  
+
+                    
+
+                    
+                        var placemarkString = iconText + ' ' + balloonText + ' ' + coords[0].toPrecision(6) + ' ' + coords[0].toPrecision(6);
+                        
 
 
-            
-        }
-    </script>
-</head>
+                        $.post("{% url sticktomap.views.save %}", {
+                            placemarkString: placemarkString
+                        });
+                    
+                    
+                    //Закрываем балун
+                    myMap.balloon.close(); 
+                });       
+                
+            } else {
+                myMap.balloon.close();
+            }
+        });
+    }
+</script>
+{% endblock %}
 
-<body>
+
+{% block content %}
     <div id="map" style="width: 600px; height: 400px"></div>
-</body>
-
-</html>
+{% endblock %}

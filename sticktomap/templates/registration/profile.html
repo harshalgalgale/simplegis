@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block heading %}
+Profile
+{% endblock %}
+
+
+{% block title %}
+Profile
+{% endblock %}
+{% block content %}
+
+{% if form.errors %}
+<p>Something happened.</p>
+{% endif %}
+
+{% csrf_token %}
+    {% for field in form %}
+    	<div class="field-wrapper">
+            {{ field.errors }}
+            {{ field.label_tag }}: {{ field }}
+        </div>
+    {% endfor %}
+<input type="submit" value="update" />
+</form>
+
+{% endblock %}
