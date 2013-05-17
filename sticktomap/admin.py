@@ -4,12 +4,8 @@ from sticktomap.models import Placemark
 
 
 class PlacemarkAdmin(admin.ModelAdmin):
-    #exclude = ('user',)
-    list_display = ('name', 'desc', 'lat', 'lon')
-    #prepopulated_fields = { 'slug': ['name'] }
+    list_display = ('name', 'descr', 'lat', 'lon')
     
-    
-
     def queryset(self, request):
         if request.user.is_superuser:
             return Placemark.objects.all()

@@ -1,20 +1,55 @@
 {% extends "base.html" %}
 
+{% block title%} - Вход {% endblock %}
+
+{% block style %}
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+{% endblock %}
+
 {% block content %}
 
   {% if form.errors %}
-    <p class="error">Sorry, that's not a valid username or password</p>
+    <p class="error">Извините, это неверная пара имя пользователя и пароль</p>
   {% endif %}
 
-  <form action="" method="post">
-    {% csrf_token %}
-    <label for="username">User name:</label>
-    <input type="text" name="username" value="" id="username">
-    <label for="password">Password:</label>
-    <input type="password" name="password" value="" id="password">
+  
 
-    <input type="submit" value="login" />
+  <div class="container">
     
-  </form>
+    <form class="form-signin" action="" method="post">
+      {% csrf_token %}
+      <h3 class="form-signin-heading">Войти</h3>
+      <input type="text" name="username" value="" class="input-block-level" placeholder="Имя пользователя">
+      <input type="password" name="password" value="" class="input-block-level" placeholder="Пароль">
+        
+      <button class="btn btn-medium btn-primary" type="submit" value="login">Войти</button>
+    </form>
+
+  </div> <!-- /container -->
 
 {% endblock %}

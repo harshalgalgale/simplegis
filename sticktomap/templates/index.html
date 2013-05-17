@@ -10,76 +10,97 @@
     var myMap; 
 
     function init() { 
+
+        // Инициализация карты
         myMap = new ymaps.Map ("map", {
             center: [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
-            zoom: 7
+            zoom: 7,
+            behaviors: ['default', 'scrollZoom']
         }); 
-       
         
+
+        // Отрисовка переданных из бд меток
         {% for placemark in placemarks %}
- 
         var myPlacemark = new ymaps.Placemark([{{placemark.lat}},{{placemark.lon}}], {
-            // Свойства
             iconContent: "{{placemark.name}}", 
-            balloonContent: "{{placemark.desc}}",                 
-        });
+            balloonContent: "{{placemark.descr}}",   
+        }, 
+        {balloonContentLayout: ymaps.templateLayoutFactory.createClass(
+            '<h3>$[properties.iconContent]</h3>\
+            <h4>$[geometry.coordinates]</h4>\
+            <table class="b-point-params"><tr>\
+            <td>Описание:</td>\
+            <td><textarea id="baloon_description">$[properties.balloonContent]</textarea></td>\
+            </tr><tr>\
+            <td><input id="deletePointButton" type="button" value="Удалить"/></td>\
+            <td><input class="right" id="savePointButton" type="button" value="OK"/></td>\
+            </tr></table>', {
+                build: function () {
+                    this.constructor.superclass.build.call(this);
+                    //var g = this._T.geoObject;
+                    $('#savePointButton').bind('click', this.onSavePointButton);
+                    $('#deletePointButton').bind('click', this.onDeletePointButton);
+                },
+                clear: function () {
+                    $('#savePointButton').unbind('click', this.onSavePointButton);
+                    $('#deletePointButton').unbind('click', this.onDeletePointButton);
+                    this.constructor.superclass.clear.call(this);
+                },
+                onSavePointButton: function () {
+                     
+                },
+                onDeletePointButton: function () {
+                      
+                }
+            }
+        )
+        }
+        );
 
-        myPlacemark.events.add('dblclick', function (e) {
-            map.geoObjects.remove(myPlace); }) 
+        myPlacemark.properties.set({ id: {{placemark.id}} });
 
-        myPlacemark.options.set({
-            hideIconOnBalloonOpen: false,
-        })
-
-        // Добавляем метку на карту
         myMap.geoObjects.add(myPlacemark);
         {% endfor %}
 
-        /*
-        var placemarkByID = [];
-        {% for placemark in placemarks %}
-        placemarkByID[{{placemark.id}}] = {
-            name: "{{placemark.name}}",
-            desc: "{{placemark.desc}}",
-            lat: {{placemark.lat}},
-            lng: {{placemark.lon}},
-        };
-        {% endfor %}
+        myMap.geoObjects.events.add('dblclick', function (e) {
+            console.log(placemark);
+            $.post("{% url sticktomap.views.delete %}", {
+                            id: placemark.properties.get('id')
+                        }, function(data){
+                                alert("Succes: " + data);
+                                myMap.geoObjects.remove(e.get('target'));
+                        });
+             }) 
 
-        for (var p in placemarkByID) {
-            var myPlacemark = new ymaps.Placemark([{{p.lat}},{{p.lon}}], {
-                // Свойства
-                iconContent: p.name, 
-                balloonContent: p.desc,                 
-            });
+        //myMap.geoObjects.events.add('click', function (e) {
+          //  myMap.balloon.open(e.get('target').properties.get('coordinates'));
+        //})
 
-            myPlacemark.events.add('dblclick', function (e) {
-                map.geoObjects.remove(myPlace); }) 
 
-            myPlacemark.options.set({
-                hideIconOnBalloonOpen: false,
-            })
-
-            // Добавляем метку на карту
-            myMap.geoObjects.add(myPlacemark);
-        }*/
-
-        /*
-        $(document).ready(function () {
-            function activatePlacemarks() {
-                // Add waypoint click handler
-                $('.placemark').each(function () {
-                    $(this).click(function() {
-                        
-                    }).hover(
-                        function () {this.className = this.className.replace('OFF', 'ON');},
-                        function () {this.className = this.className.replace('ON', 'OFF');}
-                    );
-                });
+        // ajax csrf token handling
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
             }
-            activatePlacemarks();
         });
-        */
 
         myMap.events.add('click', function (e) {
             if (!myMap.balloon.isOpen()) {
@@ -87,7 +108,7 @@
                 var coords = e.get('coordPosition');
                 myMap.balloon.open(coords, {                        
                     contentBody:   '<div id="menu">\
-                                    {% csrf_token %}\
+                                    <div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></div>\
                                         <div id="menu_list">\
                                             <label>Название:</label> <input type="text" class="input-medium" name="icon_text" /><br />\
                                             <label>Описание:</label> <input type="text" class="input-medium" name="balloon_text" /><br />\
@@ -115,23 +136,19 @@
                     });
 
                     myPlacemark.options.set({
-                        hideIconOnBalloonOpen: false,
+                        hideIconOnBalloonOpen: true,
                     })
+                
                     
-                    myPlacemark.events.add('dblclick', function (e) {
-                        map.geoObjects.remove(myPlacemark); 
-                    })  
-
-                    
-
-                    
-                        var placemarkString = iconText + ' ' + balloonText + ' ' + coords[0].toPrecision(6) + ' ' + coords[0].toPrecision(6);
+                    var placemarkString = iconText + ' ' + balloonText + ' ' + coords[0].toPrecision(6) + ' ' + coords[1].toPrecision(6);
                         
 
-
-                        $.post("{% url sticktomap.views.save %}", {
-                            placemarkString: placemarkString
-                        });
+                    $.post("{% url sticktomap.views.save %}", {
+                        placemarkString: placemarkString
+                        }, function(data){
+                            alert("Succes: " + data["id"]);
+                            myPlacemark.properties.set({ id: data["id"] });
+                    });
                     
                     
                     //Закрываем балун
@@ -148,5 +165,11 @@
 
 
 {% block content %}
-    <div id="map" style="width: 600px; height: 400px"></div>
+<div class="hero-unit">
+        <div class="container">
+            <p>Ваши метки</p>
+            <div id="map" style="width: 600px; height: 400px"></div>
+        </div>
+    </div>
+
 {% endblock %}

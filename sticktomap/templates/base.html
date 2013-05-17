@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8">
-    <title>{% block title %}Untitled{% endblock %}</title>
+    <title>simplegis{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -12,7 +12,11 @@
     <style>
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        padding-bottom: 40px;
+        background-color: #f5f5f5;
       }
+    {% block style  %}
+    {% endblock %}
     </style>
     <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -44,11 +48,24 @@
           <a class="brand" href="#">simplegis</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="/sticktomap">sticktomap</a></li>
-              {% block extranav %}
-              {% endblock %}
-              </ul>
+              <li class="active"><a href="/"> </i>Главная</a></li>
+              {%if user.is_authenticated%}
+              <li><a href="/profile"> </i>Профиль</a></li>
+
+              {%else%}
+              <li><a href="/register"> </i>Регистрация</a></li>
+              <li><a href="/login"> </i>Войти</a></li>
+              {%endif%}
+            </ul>
+            {% block extranav %}
+            {% endblock %}
+            {%if user.is_authenticated%}
             
+            <ul class="nav pull-right">  
+              <li><a href="/logout"> </i>Выйти</a></li>
+            </ul>
+            <p class="navbar-text pull-right">Вы вошли как <b>{{user.username}}</b></p>
+            {%endif%}
           </div><!--/.nav-collapse -->
         </div>
       </div>

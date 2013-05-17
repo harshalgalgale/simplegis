@@ -1,13 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}Create an account{% endblock %}
+{% block title %}- Регистрация{% endblock %}
+
+{% block style %}
+
+      .form-register {
+        max-width: 800px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-register .form-register-heading,
+      .form-register .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-register input[type="text"],
+      .form-register input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+{% endblock %}
 
 {% block content %}
-  <h1>Create an account</h1>
 
-  <form action="" method="post">
+  <div class="container">
+    
+    <form class="form-register" action="" method="post">
+      <h3 class="form-register-heading">Регистрация</h3>
       {% csrf_token %}
       {{ form.as_p }}
-      <input type="submit" value="Create the account">
-  </form>
+      <input type="submit" value="Регистрация">
+    </form>
+
+  </div> <!-- /container -->
+
+
 {% endblock %}

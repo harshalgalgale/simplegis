@@ -8,7 +8,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth import login as auth_login, logout as auth_logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import UserManager
@@ -16,36 +16,54 @@ from django.shortcuts import redirect, render, render_to_response
 from sticktomap.models import Placemark
 from django import forms
 from django.core.urlresolvers import resolve
+import json
 
 
-
+@login_required()
+@csrf_protect
 def index(request):
-    placemarks = Placemark.objects.all() #filter(user=request.user)
-    return render_to_response('index.html', {
-        'placemarks': placemarks,
-        'content': render_to_string('index.html', {'placemarks': placemarks}),
-    })
-
-@csrf_exempt
+    placemarks = Placemark.objects.filter(user=request.user)
+    return render_to_response('index.html', {'placemarks':placemarks},
+                          context_instance=RequestContext(request))
+@csrf_protect
+@login_required(login_url='/login')
 def save(request):
-    if request.method == 'POST':
-        name, desc, lat, lon = request.POST.get('placemarkString', '').split()
-        placemark = Placemark()
+    if request.is_ajax():
+        name, descr, lat, lon = request.POST.get('placemarkString', '').split()
+        if request.POST.get('id',''):
+            placemark = Placemark.objects.get(id=int(request.POST.get('id', '')))
+        else:
+            placemark = Placemark()
         placemark.name = name
-        placemark.desc = desc
+        placemark.descr = descr
         placemark.lat = lat
         placemark.lon = lon
         placemark.user = request.user
         placemark.save()
-    return HttpResponse()
+        json_response = json.dumps({"id": placemark.id})
+        return HttpResponse(json_response, content_type='application/json')
+    else:
+        return HttpResponse(status=400)
 
+@csrf_protect
+@login_required(login_url='/login')
+def delete(request):
+    if request.is_ajax():
+        placemark = Placemark.objects.get(id=int(request.POST.get('id', ''))).delete()
+        return HttpResponse("Deleted.", content_type="text/plain")
+    else:
+        return HttpResponse(status=400)
 
 def login(request):
     if not request.user.is_authenticated():
         return redirect('django.contrib.auth.views.login')
     return redirect('sticktomap.views.index')
 
-@login_required
+def logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect('/')
+
+@login_required()
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
