@@ -30,10 +30,7 @@ def index(request):
 def save(request):
     if request.is_ajax():
         name, descr, lat, lon = request.POST.get('placemarkString', '').split()
-        if request.POST.get('id',''):
-            placemark = Placemark.objects.get(id=int(request.POST.get('id', '')))
-        else:
-            placemark = Placemark()
+        placemark = Placemark()
         placemark.name = name
         placemark.descr = descr
         placemark.lat = lat
@@ -42,6 +39,20 @@ def save(request):
         placemark.save()
         json_response = json.dumps({"id": placemark.id})
         return HttpResponse(json_response, content_type='application/json')
+    else:
+        return HttpResponse(status=400)
+
+
+@csrf_protect
+@login_required(login_url='/login')
+def update(request):
+    if request.is_ajax():
+        name, descr, id = request.POST.get('geoobjectString', '').split()
+        placemark = Placemark.objects.get(id=int(id))
+        placemark.name = name
+        placemark.descr = descr
+        placemark.save()
+        return HttpResponse()
     else:
         return HttpResponse(status=400)
 

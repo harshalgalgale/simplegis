@@ -4,7 +4,6 @@
 {% block title %}{% endblock %}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
-<script src="http://yandex.st/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     ymaps.ready(init);
     var myMap; 
@@ -25,31 +24,57 @@
             iconContent: "{{placemark.name}}", 
             balloonContent: "{{placemark.descr}}",   
         }, 
-        {balloonContentLayout: ymaps.templateLayoutFactory.createClass(
-            '<h3>$[properties.iconContent]</h3>\
-            <h4>$[geometry.coordinates]</h4>\
-            <table class="b-point-params"><tr>\
-            <td>Описание:</td>\
-            <td><textarea id="baloon_description">$[properties.balloonContent]</textarea></td>\
-            </tr><tr>\
-            <td><input id="deletePointButton" type="button" value="Удалить"/></td>\
-            <td><input class="right" id="savePointButton" type="button" value="OK"/></td>\
-            </tr></table>', {
+        {balloonContentLayout: ymaps.templateLayoutFactory.createClass([
+                    '<div id="menu">',
+                        '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
+                        '</div>',
+                        '<div id="menu-list">',
+                            '<label class="control-label">Название</label>',
+                            '<input class="input-xlarge" type="text" name="name" tabindex="1" placeholder="Название объекта" value="$[properties.iconContent]"/>',
+                    
+                            '<label class="control-label">Описание</label>',
+                            '<textarea rows="3" class="input-xlarge" name="description" tabindex="2" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
+                        '</div>',
+                        '<button type="submit" id="save" class="btn btn-primary">Сохранить</button>',
+                        '<button type="delete" id="delete" class="btn" style="margin-left: 10px">Удалить</button>',
+                    '</div>'].join(' '), {
                 build: function () {
                     this.constructor.superclass.build.call(this);
-                    //var g = this._T.geoObject;
-                    $('#savePointButton').bind('click', this.onSavePointButton);
-                    $('#deletePointButton').bind('click', this.onDeletePointButton);
+
+                    geoObject = this.geoObject = this.getData().geoObject;
+
+
+                    
+                    $('#save').bind('click', $.proxy(this.onSave,this));
+                    $('#delete').bind('click', $.proxy(this.onDelete,this));
                 },
                 clear: function () {
-                    $('#savePointButton').unbind('click', this.onSavePointButton);
-                    $('#deletePointButton').unbind('click', this.onDeletePointButton);
+                    $('#save').unbind('click');
+                    $('#delete').unbind('click');
                     this.constructor.superclass.clear.call(this);
                 },
-                onSavePointButton: function () {
-                     
+                onDelete: function () {
+                    $.post("{% url sticktomap.views.delete %}", {
+                            id: geoObject.properties.get('id')
+                        }, function(data){
+                                alert("Deleted from database");
+                                myMap.geoObjects.remove(geoObject);
+                        });
                 },
-                onDeletePointButton: function () {
+                onSave: function () {
+                    geoObject.properties.set({
+                        iconContent: $('input[name="name"]').val(),
+                        balloonContent: $('textarea[name="description"]').val(),                       
+                    });
+
+
+                    var geoobjectString = $('input[name="name"]').val() + ' ' + $('textarea[name="description"]').val() + ' ' + geoObject.properties.get('id');
+
+                    $.post("{% url sticktomap.views.update %}", {
+                        geoobjectString: geoobjectString
+                        }, function(data){
+                            alert("Saved to database.");
+                    });
                       
                 }
             }
@@ -61,21 +86,6 @@
 
         myMap.geoObjects.add(myPlacemark);
         {% endfor %}
-
-        myMap.geoObjects.events.add('dblclick', function (e) {
-            console.log(placemark);
-            $.post("{% url sticktomap.views.delete %}", {
-                            id: placemark.properties.get('id')
-                        }, function(data){
-                                alert("Succes: " + data);
-                                myMap.geoObjects.remove(e.get('target'));
-                        });
-             }) 
-
-        //myMap.geoObjects.events.add('click', function (e) {
-          //  myMap.balloon.open(e.get('target').properties.get('coordinates'));
-        //})
-
 
         // ajax csrf token handling
         $.ajaxSetup({
