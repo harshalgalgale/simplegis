@@ -23,11 +23,6 @@
             behaviors: ['default', 'scrollZoom']
         }); 
 
-        var myPlacemark = new ymaps.Placemark([57,3099,49,1009], {
-            iconContent: "qw", 
-            balloonContent: "zx",   
-        })
-
         myMap.geoObjects.add(myPlacemark);
         
 
@@ -44,10 +39,10 @@
                         '<div id="menu-list">',
                         '$[geometry.coordinates]',
                             '<label class="control-label">Название</label>',
-                            '<input class="input-xlarge" maxlength="100" type="text" name="name" tabindex="1" placeholder="Название объекта" value="$[properties.iconContent]"/>',
+                            '<input class="input-xlarge" maxlength="100" type="text" name="name" tabindex="1" required="required" placeholder="Название объекта" value="$[properties.iconContent]"/>',
                     
                             '<label class="control-label">Описание</label>',
-                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="description" tabindex="2" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
+                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="description" tabindex="2" required="required" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
                         '</div>',
                         '<button type="submit" id="save" class="btn btn-primary">Сохранить</button>',
                         '<button type="delete" id="delete" class="btn" style="margin-left: 10px">Удалить</button>',
@@ -71,24 +66,29 @@
                     $.post("{% url sticktomap.views.delete %}", {
                             id: geoObject.properties.get('id')
                         }, function(data){
-                                alert("Deleted from database");
+                                alert("Метка удалена из базы данных.");
                                 myMap.geoObjects.remove(geoObject);
                         });
                 },
                 onSave: function () {
-                    geoObject.properties.set({
-                        iconContent: $('input[name="name"]').val(),
-                        balloonContent: $('textarea[name="description"]').val(),                       
-                    });
+                    if (!$('input[name="name"]').val() || !$('textarea[name="description"]').val()) {
+                        alert("Поля должны быть заполнены.");
+                    }
+                    else {
+                        geoObject.properties.set({
+                            iconContent: $('input[name="name"]').val(),
+                            balloonContent: $('textarea[name="description"]').val(),                       
+                        });
 
 
-                    var geoobjectString = $('input[name="name"]').val() + ' ' + $('textarea[name="description"]').val() + ' ' + geoObject.properties.get('id');
+                        var geoobjectString = $('input[name="name"]').val() + ' ' + $('textarea[name="description"]').val() + ' ' + geoObject.properties.get('id');
 
-                    $.post("{% url sticktomap.views.update %}", {
-                        geoobjectString: geoobjectString
-                        }, function(data){
-                            alert("Saved to database.");
-                    });
+                        $.post("{% url sticktomap.views.update %}", {
+                            geoobjectString: geoobjectString
+                            }, function(data){
+                                alert("Метка сохранена в базе данных.");
+                        });
+                    }
                       
                 }
             }
@@ -135,9 +135,9 @@
                                     '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></div>',
                                         '<div id="menu_list">',
                                             '<label>Название</label>',
-                                            ' <input type="text" maxlength="100" class="input-xlarge" name="icon_text" placeholder="Название объекта" /><br />',
+                                            ' <input type="text" maxlength="100" class="input-xlarge" name="icon_text" required="required" placeholder="Название объекта" /><br />',
                                             '<label>Описание</label>',
-                                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="balloon_text" tabindex="2" placeholder="Описание объекта"></textarea>',
+                                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="balloon_text" tabindex="2" required="required" placeholder="Описание объекта"></textarea>',
                                         '</div>',
                                         '<button type="submit" class="btn btn-success">Сохранить</button>',
                                     '</div>'
@@ -149,36 +149,31 @@
                 $('#menu button[type="submit"]').click(function () {
                     var iconText = $('input[name="icon_text"]').val(),
                         balloonText = $('textarea[name="balloon_text"]').val();
-            
-                
-                    //Добавляем метку на карту  
-                    myMap.geoObjects.add(myPlacemark);
+                    if (!$('input[name="icon_text"]').val() || !$('textarea[name="balloon_text"]').val()) {
+                        alert("Поля должны быть заполнены.");
+                    }
+                    else {                
+                        //Добавляем метку на карту  
+                        myMap.geoObjects.add(myPlacemark);
 
-                
-                    //Изменяем свойства метки и балуна
-                    myPlacemark.properties.set({
-                        iconContent: iconText,
-                        balloonContent: balloonText,                       
-                    });
-
-                    myPlacemark.options.set({
-                        hideIconOnBalloonOpen: true,
-                    })
-                
-                    
-                    var placemarkString = iconText + ' ' + balloonText + ' ' + coords[0].toPrecision(6) + ' ' + coords[1].toPrecision(6);
+                        //Изменяем свойства метки и балуна
+                        myPlacemark.properties.set({
+                            iconContent: iconText,
+                            balloonContent: balloonText,                       
+                        });
                         
+                        var placemarkString = iconText + ' ' + balloonText + ' ' + coords[0].toPrecision(6) + ' ' + coords[1].toPrecision(6); 
 
-                    $.post("{% url sticktomap.views.save %}", {
-                        placemarkString: placemarkString
-                        }, function(data){
-                            alert("Saved to database.");
-                            myPlacemark.properties.set({ id: data["id"] });
-                    });
+                        $.post("{% url sticktomap.views.save %}", {
+                            placemarkString: placemarkString
+                            }, function(data){
+                                alert("Метка добавлена в базу данных.");
+                                myPlacemark.properties.set({ id: data["id"] });
+                        });
                     
-                    
-                    //Закрываем балун
-                    myMap.balloon.close(); 
+                        //Закрываем балун
+                        myMap.balloon.close(); 
+                    }
                 });       
                 
             } else {
@@ -193,9 +188,8 @@
 {% block content %}
 <div class="hero-unit">
     <div class="container">
-            <p>Ваши метки</p>
             <div id="map" style="width: 600px; height: 400px"></div>
-        </div>
     </div>
+</div>
 
 {% endblock %}
