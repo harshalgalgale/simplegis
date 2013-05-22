@@ -32,6 +32,9 @@
     {% block jquery %}
     {% endblock %}
     });
+
+
+
     </script>
   </head>
 
@@ -48,23 +51,23 @@
           <a class="brand" href="#">simplegis</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="/"> </i>Главная</a></li>
+              <li id="nav-main"><a href="/"> </i>Главная</a></li>
               {%if user.is_authenticated%}
-              <li><a href="/profile"> </i>Профиль</a></li>
-
-              {%else%}
-              <li><a href="/register"> </i>Регистрация</a></li>
-              <li><a href="/login"> </i>Войти</a></li>
+              <li id="nav-profile"><a href="/profile"> </i>Профиль</a></li>
               {%endif%}
             </ul>
             {% block extranav %}
             {% endblock %}
             {%if user.is_authenticated%}
-            
             <ul class="nav pull-right">  
               <li><a href="/logout"> </i>Выйти</a></li>
             </ul>
             <p class="navbar-text pull-right">Вы вошли как <b>{{user.username}}</b></p>
+            {%else%}
+            <ul class="nav pull-right"> 
+              <li id="nav-register"><a href="/register"> </i>Регистрация</a></li>
+              <li id="nav-login"><a href="/login"> </i>Войти</a></li>
+            </ul>
             {%endif%}
           </div><!--/.nav-collapse -->
         </div>

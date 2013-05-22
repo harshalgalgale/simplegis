@@ -1,17 +1,15 @@
 {% extends "base.html" %}
 
-{% block heading %}
-Profile
+{% block title %} - Профиль{% endblock %}
+
+{% block jquery %}
+  $('#nav-profile').addClass('active');
 {% endblock %}
 
-
-{% block title %}
-Profile
-{% endblock %}
 {% block content %}
 
 {% if form.errors %}
-<p>Something happened.</p>
+<p>Произошла ошибка.</p>
 {% endif %}
 
 {% csrf_token %}

@@ -44,7 +44,7 @@ def save(request):
 
 
 @csrf_protect
-@login_required(login_url='/login')
+@login_required()
 def update(request):
     if request.is_ajax():
         name, descr, id = request.POST.get('geoobjectString', '').split()
@@ -57,7 +57,7 @@ def update(request):
         return HttpResponse(status=400)
 
 @csrf_protect
-@login_required(login_url='/login')
+@login_required()
 def delete(request):
     if request.is_ajax():
         placemark = Placemark.objects.get(id=int(request.POST.get('id', ''))).delete()
@@ -104,13 +104,13 @@ def register(request, template_name='registration/register.html',
         if form.is_valid():
 
             # Ensure the user-originating redirection url is safe.
-            if not is_safe_url(url=redirect_to, host=request.get_host()):
-                redirect_to = resolve(settings.LOGIN_REDIRECT_URL)
+            #if not is_safe_url(url=redirect_to, host=request.get_host()):
+            #    redirect_to = resolve(settings.LOGIN_REDIRECT_URL)
 
             #create user
             form.save()
 
-            return HttpResponseRedirect(redirect_to)
+            return redirect('sticktomap.views.profile')
     else:
         form = user_creation_form()
 

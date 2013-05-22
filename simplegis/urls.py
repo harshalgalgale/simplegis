@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^', include('sticktomap.urls')),
     url(r'^login/', 'sticktomap.views.login', name = 'login'),
     url(r'^auth/login/', 'django.contrib.auth.views.login'),
-    url(r'^logout/', 'sticktomap.views.logout', name = 'logout'),#'django.contrib.auth.views.logout', {'template_name': 'registration/logged_out.html'}, name = 'logout'),
+    url(r'^logout/', 'sticktomap.views.logout', name = 'logout'),
     url(r'^register/', 'sticktomap.views.register', name = 'register'),
     url(r'^profile/', 'sticktomap.views.profile', name = 'profile'),
 )

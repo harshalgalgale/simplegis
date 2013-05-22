@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 
+
+{% block title %} - Главная{% endblock %}
+
 {% block extrahead %}
-{% block title %}{% endblock %}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
 <script type="text/javascript">
+    {% block jquery %}
+    $('#nav-main').addClass('active');
+    {% endblock %}
+    
     ymaps.ready(init);
     var myMap; 
 
@@ -16,6 +22,13 @@
             zoom: 7,
             behaviors: ['default', 'scrollZoom']
         }); 
+
+        var myPlacemark = new ymaps.Placemark([57,3099,49,1009], {
+            iconContent: "qw", 
+            balloonContent: "zx",   
+        })
+
+        myMap.geoObjects.add(myPlacemark);
         
 
         // Отрисовка переданных из бд меток
@@ -25,15 +38,16 @@
             balloonContent: "{{placemark.descr}}",   
         }, 
         {balloonContentLayout: ymaps.templateLayoutFactory.createClass([
-                    '<div id="menu">',
+                    '<div id="menu" style="padding-right: 100px; padding-left: 100px">',
                         '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
                         '</div>',
                         '<div id="menu-list">',
+                        '$[geometry.coordinates]',
                             '<label class="control-label">Название</label>',
-                            '<input class="input-xlarge" type="text" name="name" tabindex="1" placeholder="Название объекта" value="$[properties.iconContent]"/>',
+                            '<input class="input-xlarge" maxlength="100" type="text" name="name" tabindex="1" placeholder="Название объекта" value="$[properties.iconContent]"/>',
                     
                             '<label class="control-label">Описание</label>',
-                            '<textarea rows="3" class="input-xlarge" name="description" tabindex="2" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
+                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="description" tabindex="2" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
                         '</div>',
                         '<button type="submit" id="save" class="btn btn-primary">Сохранить</button>',
                         '<button type="delete" id="delete" class="btn" style="margin-left: 10px">Удалить</button>',
@@ -117,22 +131,24 @@
 
                 var coords = e.get('coordPosition');
                 myMap.balloon.open(coords, {                        
-                    contentBody:   '<div id="menu">\
-                                    <div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></div>\
-                                        <div id="menu_list">\
-                                            <label>Название:</label> <input type="text" class="input-medium" name="icon_text" /><br />\
-                                            <label>Описание:</label> <input type="text" class="input-medium" name="balloon_text" /><br />\
-                                        </div>\
-                                        <button type="submit" class="btn btn-success">Сохранить</button>\
-                                    </div>'
-                });
+                    contentBody:   ['<div id="menu">',
+                                    '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></div>',
+                                        '<div id="menu_list">',
+                                            '<label>Название</label>',
+                                            ' <input type="text" maxlength="100" class="input-xlarge" name="icon_text" placeholder="Название объекта" /><br />',
+                                            '<label>Описание</label>',
+                                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="balloon_text" tabindex="2" placeholder="Описание объекта"></textarea>',
+                                        '</div>',
+                                        '<button type="submit" class="btn btn-success">Сохранить</button>',
+                                    '</div>'
+                ].join(' ')});
                      
                 var myPlacemark = new ymaps.Placemark(coords);
  
                 //Сохраняем данные из формы     
                 $('#menu button[type="submit"]').click(function () {
                     var iconText = $('input[name="icon_text"]').val(),
-                        balloonText = $('input[name="balloon_text"]').val();
+                        balloonText = $('textarea[name="balloon_text"]').val();
             
                 
                     //Добавляем метку на карту  
@@ -156,7 +172,7 @@
                     $.post("{% url sticktomap.views.save %}", {
                         placemarkString: placemarkString
                         }, function(data){
-                            alert("Succes: " + data["id"]);
+                            alert("Saved to database.");
                             myPlacemark.properties.set({ id: data["id"] });
                     });
                     
@@ -176,7 +192,7 @@
 
 {% block content %}
 <div class="hero-unit">
-        <div class="container">
+    <div class="container">
             <p>Ваши метки</p>
             <div id="map" style="width: 600px; height: 400px"></div>
         </div>

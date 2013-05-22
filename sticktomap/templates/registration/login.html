@@ -2,6 +2,10 @@
 
 {% block title%} - Вход {% endblock %}
 
+{% block jquery %}
+  $('#nav-login').addClass('active');
+{% endblock %}
+
 {% block style %}
 
       .form-signin {
@@ -34,7 +38,7 @@
 {% block content %}
 
   {% if form.errors %}
-    <p class="error">Извините, это неверная пара имя пользователя и пароль</p>
+    <p class="error">Извините, это неверная пара имя пользователя и пароль.</p>
   {% endif %}
 
   
@@ -47,7 +51,7 @@
       <input type="text" name="username" value="" class="input-block-level" placeholder="Имя пользователя">
       <input type="password" name="password" value="" class="input-block-level" placeholder="Пароль">
         
-      <button class="btn btn-medium btn-primary" type="submit" value="login">Войти</button>
+      <button class="btn btn-primary" type="submit" value="login">Войти</button>
     </form>
 
   </div> <!-- /container -->
