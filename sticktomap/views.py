@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from django.utils.http import is_safe_url
 from django.conf import settings
@@ -125,7 +127,7 @@ def register(request, template_name='registration/register.html',
             #create user
             form.save()
 
-            return redirect('sticktomap.views.profile')
+            return HttpResponse("<p>Вы успешно зарегистрированы.</p><p><a href=\"/\">На главную</a></p>")
     else:
         form = user_creation_form()
 
