@@ -5,7 +5,8 @@
 
 {% block extrahead %}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script src="http://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU" type="text/javascript"></script>
+<script src="http://api-maps.yandex.ru/2.0-stable/?load=package.full&lang=ru-RU" type="text/javascript"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
 <script type="text/javascript">
     {% block jquery %}
     $('#nav-main').addClass('active');
@@ -13,6 +14,8 @@
     
     ymaps.ready(init);
     var myMap; 
+
+       
 
     function init() { 
 
@@ -22,8 +25,6 @@
             zoom: 7,
             behaviors: ['default', 'scrollZoom']
         }); 
-
-        myMap.geoObjects.add(myPlacemark);
         
 
         // Отрисовка переданных из бд меток
@@ -31,31 +32,45 @@
         var myPlacemark = new ymaps.Placemark([{{placemark.lat}},{{placemark.lon}}], {
             iconContent: "{{placemark.name}}", 
             balloonContent: "{{placemark.descr}}",   
-        }, 
-        {balloonContentLayout: ymaps.templateLayoutFactory.createClass([
-                    '<div id="menu" style="padding-right: 100px; padding-left: 100px">',
+        }, { balloonContentLayout: ymaps.templateLayoutFactory.createClass([
+                    '<div id="menu" style="padding-right: 20px; padding-left: 20px">',
                         '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
                         '</div>',
                         '<div id="menu-list">',
-                        '$[geometry.coordinates]',
+                        '<h4>$[geometry.coordinates]</h4>',
                             '<label class="control-label">Название</label>',
                             '<input class="input-xlarge" maxlength="100" type="text" name="name" tabindex="1" required="required" placeholder="Название объекта" value="$[properties.iconContent]"/>',
                     
                             '<label class="control-label">Описание</label>',
                             '<textarea rows="3" maxlength="500" class="input-xlarge" name="description" tabindex="2" required="required" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
                         '</div>',
-                        '<button type="submit" id="save" class="btn btn-primary">Сохранить</button>',
-                        '<button type="delete" id="delete" class="btn" style="margin-left: 10px">Удалить</button>',
-                    '</div>'].join(' '), {
-                build: function () {
+                        '<button type="submit" id="save" class="btn btn-small btn-primary">Сохранить</button>',
+                        '<button type="delete" id="delete" class="btn btn-small" style="margin-left: 10px">Удалить</button>',
+                    '</div>',
+
+                    '<form id="add-image-form" method="POST" action="{% url sticktomap.views.add_image %}" enctype="multipart/form-data">',
+                        '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
+                        '</div>',
+                        '<div style="display:none">',
+                            
+                                '<input type="hidden" id="id" value="$[properties.id]">',
+                                '<input type="file" class="file" id="upload-image" />',
+                                '<button type="submit" id="image" class="btn btn-small" style="margin-left: 10px">Отправить</button>',
+                             
+                        '</div>',
+                    '</form>'].join(' '), {
+                build: function (e) {
                     this.constructor.superclass.build.call(this);
 
                     geoObject = this.geoObject = this.getData().geoObject;
+                    
 
 
                     
                     $('#save').bind('click', $.proxy(this.onSave,this));
                     $('#delete').bind('click', $.proxy(this.onDelete,this));
+                    $('#image').bind('click', $.proxy(this.onImage,this));
+
                 },
                 clear: function () {
                     $('#save').unbind('click');
@@ -90,9 +105,14 @@
                         });
                     }
                       
-                }
+                },
+                onImage: function () {
+                    $('#add-image-form').ajaxForm();
+                } 
             }
-        )
+        ),
+        preset: 'twirl#blueStretchyIcon', 
+
         }
         );
 
@@ -100,6 +120,7 @@
 
         myMap.geoObjects.add(myPlacemark);
         {% endfor %}
+
 
         // ajax csrf token handling
         $.ajaxSetup({
@@ -180,16 +201,88 @@
                 myMap.balloon.close();
             }
         });
+
+        
+
+        
+
+        
     }
+
+
+    function BuildRoute() {
+        var point = [],
+        i = 0,
+        p,
+        it = myMap.geoObjects.getIterator(); 
+
+        while (p = it.getNext()) {
+            point[i] = p.geometry.getCoordinates();
+            i++;
+        }
+    
+        ymaps.route(point, {
+            mapStateAutoApply: true
+        }).then(function (r) {
+            route = r;
+            route.getPaths().options.set({
+            // в балуне выводим только информацию о времени движения с учетом пробок
+            balloonContenBodyLayout: ymaps.templateLayoutFactory.createClass('$[properties.humanJamsTime]'),
+            // можно выставить настройки графики маршруту
+            strokeColor: '0000ffff',
+            opacity: 0.9});
+            
+            var moveList = '</br>Трогаемся.</br>',
+            way,
+            segments;
+            // Получаем массив путей.
+            for (var i = 0; i < route.getPaths().getLength(); i++) {
+                way = route.getPaths().get(i);
+                segments = way.getSegments();
+                for (var j = 0; j < segments.length; j++) {
+                    var street = segments[j].getStreet();
+                    moveList += ('Едем ' + segments[j].getHumanAction() + (street ? ' на ' + street : '') + ', проезжаем ' + segments[j].getLength() + ' м.');
+                    moveList += '</br>'
+                }
+            }
+            moveList += 'Останавливаемся.';
+            // Выводим маршрутный лист.
+            $('#info').append(moveList);
+            
+            
+            myMap.geoObjects.add(route);
+
+        }, function (error) {
+            alert('Возникла ошибка: ' + error.message);
+        })
+    } 
+
+    
+
+    function ResetRoute() {
+        myMap.geoObjects.remove(route);
+        $('#info').text("");
+        myMap.setCenter([ymaps.geolocation.latitude, ymaps.geolocation.longitude], 7);
+    }
+
+
+
 </script>
 {% endblock %}
 
 
 {% block content %}
-<div class="hero-unit">
-    <div class="container">
-            <div id="map" style="width: 600px; height: 400px"></div>
+<div class="container-fluid">
+<div class="row-fluid">
+    <div class="span8">
+        <div id="map" style="width: 750px; height: 600px"></div>
     </div>
+    <div class="span4">
+        <button id="build" class="btn btn-success" onclick="BuildRoute()" >Построить маршрут</button>
+        <button id="reset" class="btn btn-cancel" onclick="ResetRoute()" >Очистить</button>
+        <div id="info" style="width: 400px; height: 600px"></div>    
+    </div>
+</div>
 </div>
 
 {% endblock %}

@@ -1,11 +1,14 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Placemark(models.Model):
-    name = models.CharField(('Name'),max_length=100)
-    descr = models.CharField(('Description'),max_length=500)
+    name = models.CharField(('Name'), max_length=100)
+    descr = models.CharField(('Description'), max_length=500)
+    img = models.ImageField(('Image'), upload_to='img/', blank=True)
     lat = models.FloatField(('Latitude'))
     lon = models.FloatField(('Longitude'))
     user = models.ForeignKey(User, related_name='placemarks')

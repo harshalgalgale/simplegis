@@ -1,28 +1,49 @@
-/*myMap.controls.add('mapTools');
-        myMap.controls.add('zoomControl');
-        button = new ymaps.control.Button({
-            data: {
-                // Зададим иконку для кнопки
-                image: 'http://api.yandex.ru//i/maps/tools/draw/add_point.png',
-                // Текст всплывающей подсказки.
-                title: 'Нажмите для добавления метки',
-                
-            }
-        }, {
-        // Зададим опции для кнопки.
-                minWidth: 20,
-        });
+<script>
+    myMap.controls.add('mapTools');
+    myMap.controls.add('zoomControl');
+    button = new ymaps.control.Button({
+        data: {
+            // Зададим иконку для кнопки
+            image: 'http://api.yandex.ru//i/maps/tools/draw/add_point.png',
+            // Текст всплывающей подсказки.
+            title: 'Нажмите для добавления метки',
+            
+        }
+    }, {
+    // Зададим опции для кнопки.
+            minWidth: 20,
+    });
 
-        button.events.add('select', function (e) {
+    button.events.add('select', function (e) {
 
-            var cursor = myMap.cursors.push('pointer');
-            clicker.enable();
-        })
+        var cursor = myMap.cursors.push('pointer');
+        clicker.enable();
+    })
 
-        button.events.add('deselect', function (e){
-            cursor.remove();
-            clicker.disable();
-        })
+    button.events.add('deselect', function (e){
+        cursor.remove();
+        clicker.disable();
+    })
 
-        myMap.controls.add(button, {top: 5, right: 5});
-        */
+    myMap.controls.add(button, {top: 5, right: 5});
+    
+function BuildRoute() {
+    var point = [];
+    
+    for (var g in myMap.geoObjects) {
+        point[i] = g.geometry.getCoordinates();
+    }
+
+    ymaps.route(point, {
+        mapStateAutoApply: true
+    }).then(function (route) {
+        myMap.geoObjects.add(route);
+    }, function (error) {
+        alert('Возникла ошибка: ' + error.message);
+    }
+}
+
+myMap.geoObject.remove(route);
+
+);
+</script>

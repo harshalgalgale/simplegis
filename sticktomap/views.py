@@ -14,6 +14,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import UserManager
 from django.shortcuts import redirect, render, render_to_response
 from sticktomap.models import Placemark
+from sticktomap.forms import UploadImageForm
 from django import forms
 from django.core.urlresolvers import resolve
 import json
@@ -22,8 +23,9 @@ import json
 @login_required()
 @csrf_protect
 def index(request):
+    form = UploadImageForm()
     placemarks = Placemark.objects.filter(user=request.user)
-    return render_to_response('index.html', {'placemarks':placemarks},
+    return render_to_response('index.html', {'placemarks': placemarks, 'form': form},
                           context_instance=RequestContext(request))
 @csrf_protect
 @login_required(login_url='/login')
@@ -61,9 +63,22 @@ def update(request):
 def delete(request):
     if request.is_ajax():
         placemark = Placemark.objects.get(id=int(request.POST.get('id', ''))).delete()
-        return HttpResponse("Deleted.", content_type="text/plain")
+        return HttpResponse()
     else:
         return HttpResponse(status=400)
+
+@csrf_protect
+@login_required()
+def add_image(request):
+    if request.method == 'POST':
+        p = Placemark.objects.get(id=int(request.POST.get('id','')))
+        p.img = request.FILES['image']
+        return HttpResponse(json.dumps([True]), mimetype='application/javascript')
+    else:
+        return HttpResponse(json.dumps([False]), mimetype='application/javascript')
+
+
+    
 
 def login(request):
     if not request.user.is_authenticated():
