@@ -17,7 +17,6 @@ from django.contrib.auth.models import UserManager
 from django.shortcuts import redirect, render, render_to_response
 from sticktomap.models import Placemark
 from sticktomap.forms import UploadImageForm
-from django import forms
 from django.core.urlresolvers import resolve
 import json
 
@@ -96,7 +95,16 @@ def logout(request):
 @csrf_protect
 @never_cache
 def profile(request):
-    # display profile form for current user
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserChangeForm(instance=request.user)
+    
+    return render_to_response( 'registration/profile.html', locals(), context_instance = RequestContext( request) )
+    
+
     form = UserChangeForm()
     context = {
             'form': form

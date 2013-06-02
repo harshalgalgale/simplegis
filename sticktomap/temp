@@ -26,24 +26,6 @@
     })
 
     myMap.controls.add(button, {top: 5, right: 5});
-    
-function BuildRoute() {
-    var point = [];
-    
-    for (var g in myMap.geoObjects) {
-        point[i] = g.geometry.getCoordinates();
-    }
-
-    ymaps.route(point, {
-        mapStateAutoApply: true
-    }).then(function (route) {
-        myMap.geoObjects.add(route);
-    }, function (error) {
-        alert('Возникла ошибка: ' + error.message);
-    }
-}
-
-myMap.geoObject.remove(route);
-
+ 
 );
 </script>
