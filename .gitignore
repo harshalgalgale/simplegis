@@ -37,6 +37,5 @@ nosetests.xml
 # OS X
 .DS_Store
 
-
 # Django
-.log
+*.log
