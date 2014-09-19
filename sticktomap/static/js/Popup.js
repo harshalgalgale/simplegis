@@ -1,0 +1,58 @@
+function setEditFormPopup(marker){
+            var container = $('<div tabindex="0" style="outline: none;" />');
+            return container.html([
+                '<div style="text-align:center;">',
+                '<div id="menu">',
+                    '<div style="display:none">',
+                        '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
+                    '</div>',
+                    '<div id="photo_block" style="display:inline-block;">',
+                        '<img id="photo" src="'+marker.photo+'">',
+                    '</div>',
+                    '<div id="menu-list" style="display:inline-block;">',
+                        '<h4>'+ marker._latlng.lat.toPrecision(6) +', ' + marker._latlng.lng.toPrecision(6) +'</h4>',
+                        '<label class="control-label">Название</label>',
+                        '<input class="input-xlarge" maxlength="100" type="text" name="name" tabindex="1" required="required" placeholder="Название объекта" value="'+ marker.options.name + '"/>',
+                        '<label class="control-label">Описание</label>',
+                        '<textarea rows="3" maxlength="500" class="input-xlarge" name="description" tabindex="2" required="required" placeholder="Описание объекта">' + marker.options.description +'</textarea>',
+                        '<input type="hidden" id="id" value='+marker.options.id+'>',
+                    '</div>',
+                    '<div class="btn-group">',
+                        '<button type="submit" id="save" class="btn btn-xs"><i class="icon-ok"></i></button>',
+                        '<button type="delete" id="delete" class="btn btn-xs"><i class="icon-trash"></i></button>',
+                    '</div>',
+                    '<div>',
+
+                        '<div class="contr"><h4>Загрузка изображения</h4></div>',
+
+                        '<div class="upload_form_cont">',
+
+                            '<form method="post" enctype="multipart/form-data" action="." name="upload_form" id="upload_form" onreset="clearUpload()">',
+                                '<div style="display:none">',
+                                    '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
+                                '</div>',
+                                '<input type="file" name="file" id="file" accept=".jpg,.png,.gif,.bmp,.tiff" onchange="fileSelected()" />',
+                                '<input type="hidden" name="id_upload" value='+marker.options.id+'>',
+                                '<div class="btn-group">',
+                                '<button type="button" class="btn btn-xs" id="browse" onclick="selectFile()"><i class="icon-folder-open"></i></button>',
+                                '<button type="button" class="btn btn-xs" disabled="true" id="upload" onclick="startUploading()"><i class="icon-circle-arrow-up"></i></button>',
+                                '<button type="reset" class="btn btn-xs" id="clear" disabled="true"><i class="icon-trash"></i></button>',
+                                '</div>',
+                                '<div id="fileinfo">',
+                                    '<div id="filename"></div>',
+                                    '<div id="filesize"></div>',
+                                    '<div id="filetype"></div>',
+                                    '<div id="filedim"></div>',
+                                '</div>',
+                                '<div id="error">Вы можете выбрать только файлы, содержащие изображения.</div>',
+                                '<div id="error2">Во время загрузки возникла ошибка.</div>',
+                                '<div id="abort">Загрузка была отменена пользователем или браузер потерял соединение.</div>',
+                                '<div id="warnsize">Ваш файл слишком велик.</div>',
+                                '<div id="upload_response"></div>',
+                            '</form>',
+                            '<img id="preview" />',
+                           
+                '</div>',
+                '</div>'
+            ].join(' '));
+        }

@@ -1,27 +1,52 @@
 {% extends "base.html" %}
-
 {% block title %} - Профиль{% endblock %}
-
+{% block extrahead %}
+<script>
 {% block jquery %}
   $('#nav-profile').addClass('active');
 {% endblock %}
+</script>
+{% endblock %}
+{% block style %}
 
+      .form-profile {
+        max-width: 800px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-profile .form-profile-heading,
+      .form-profile .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-profile input[type="text"],
+      .form-profile input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+{% endblock %}
 {% block content %}
 
-
-{% if form.errors %}
-<p>Произошла ошибка.</p>
-{% endif %}
-
-<form action="." method="post" accept-charset="utf-8">
+<form method="post" action="" class="form-profile">
 {% csrf_token %}
-    {% for field in form %}
-    	<div class="field-wrapper">
-            {{ field.errors }}
-            {{ field.label_tag }}: {{ field }}
-        </div>
-    {% endfor %}
-<input type="submit" value="update" />
-</form>
-
+<dl class="register">
+{% for field in form %}
+    <dt>{{ field.label_tag }}</dt>
+    <dd class="clearfix">{{ field }}
+    {% if field.help_text %}<div class="clearfix">{{ field.help_text }}</div>{% endif %}
+    {% if field.errors %}<div class="myerrors clearfix">{{ field.errors }}</div>{% endif %}
+    </dd>
+{% endfor %}
+</dl>
+<input type="submit" value="Изменить" / class="clearfix">
 {% endblock %}

@@ -1,0 +1,605 @@
+Internal Server Error: /track_get
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 39, in track_get
+    json_response = Track.objects.get(id=int(request.body)).track
+ValueError: invalid literal for int() with base 10: ''
+Internal Server Error: /track_get
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 39, in track_get
+    json_response = Track.objects.get(id=int(request.body)).track
+ValueError: invalid literal for int() with base 10: ''
+Internal Server Error: /track_get
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 39, in track_get
+    json_response = Track.objects.get(id=int(request.body)).track
+ValueError: invalid literal for int() with base 10: ''
+Internal Server Error: /track_get
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 39, in track_get
+    json_response = Track.objects.get(id=int(request.GET.get('id',''))).track
+ValueError: invalid literal for int() with base 10: ''
+Internal Server Error: /track
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 39, in track_get
+    json_response = Track.objects.get(id=int(request.GET.get('id',''))).track
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/manager.py", line 151, in get
+    return self.get_queryset().get(*args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 301, in get
+    num = len(clone)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 77, in __len__
+    self._fetch_all()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 854, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 220, in iterator
+    for row in compiler.results_iter():
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 709, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 782, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/util.py", line 69, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/util.py", line 53, in execute
+    return self.cursor.execute(sql, params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/utils.py", line 99, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/util.py", line 53, in execute
+    return self.cursor.execute(sql, params)
+ProgrammingError: column sticktomap_track.color does not exist
+LINE 1: ...ktomap_track"."name", "sticktomap_track"."descr", "sticktoma...
+                                                             ^
+
+Internal Server Error: /track
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 39, in track_get
+    json_response = Track.objects.get(id=int(request.GET.get('id',''))).track
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/manager.py", line 151, in get
+    return self.get_queryset().get(*args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 301, in get
+    num = len(clone)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 77, in __len__
+    self._fetch_all()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 854, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 220, in iterator
+    for row in compiler.results_iter():
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 709, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 782, in execute_sql
+    cursor.execute(sql, params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/util.py", line 69, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/util.py", line 53, in execute
+    return self.cursor.execute(sql, params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/utils.py", line 99, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/util.py", line 53, in execute
+    return self.cursor.execute(sql, params)
+ProgrammingError: column sticktomap_track.color does not exist
+LINE 1: ...ktomap_track"."name", "sticktomap_track"."descr", "sticktoma...
+                                                             ^
+
+Internal Server Error: /track_save
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/csrf.py", line 57, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 28, in track_save
+    t.track = request.body.track
+AttributeError: 'str' object has no attribute 'track'
+Internal Server Error: /track_save
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/csrf.py", line 57, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 28, in track_save
+    json_data = json.load(request.body)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/__init__.py", line 286, in load
+    return loads(fp.read(),
+AttributeError: 'str' object has no attribute 'read'
+Internal Server Error: /track_save
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/csrf.py", line 57, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 28, in track_save
+    json_data = json.load(request.body)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/__init__.py", line 286, in load
+    return loads(fp.read(),
+AttributeError: 'str' object has no attribute 'read'
+Internal Server Error: /track_save
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/csrf.py", line 57, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 28, in track_save
+    json_data = json.load(request.body)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/__init__.py", line 286, in load
+    return loads(fp.read(),
+AttributeError: 'str' object has no attribute 'read'
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/decorators.py", line 22, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/decorators.py", line 99, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 20, in index
+    return render(request, 'index.html', {'placemarks': placemarks, 'tracks': tracks})
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/shortcuts/__init__.py", line 53, in render
+    return HttpResponse(loader.render_to_string(*args, **kwargs),
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader.py", line 162, in render_to_string
+    t = get_template(template_name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader.py", line 138, in get_template
+    template, origin = find_template(template_name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader.py", line 127, in find_template
+    source, display_name = loader(name, dirs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader.py", line 43, in __call__
+    return self.load_template(template_name, template_dirs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader.py", line 49, in load_template
+    template = get_template_from_string(source, origin, template_name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader.py", line 149, in get_template_from_string
+    return Template(source, origin, name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/base.py", line 125, in __init__
+    self.nodelist = compile_string(template_string, origin)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/base.py", line 153, in compile_string
+    return parser.parse()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/base.py", line 278, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader_tags.py", line 215, in do_extends
+    nodelist = parser.parse()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/base.py", line 278, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/loader_tags.py", line 190, in do_block
+    nodelist = parser.parse(('endblock',))
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/base.py", line 285, in parse
+    self.unclosed_block_tag(parse_until)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/template/debug.py", line 65, in unclosed_block_tag
+    raise self.source_error(source, msg)
+TemplateSyntaxError: Unclosed tag 'block'. Looking for one of: endblock 
+Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/debug.py", line 75, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/decorators.py", line 99, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/cache.py", line 52, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/views.py", line 49, in login
+    current_site = get_current_site(request)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 103, in get_current_site
+    current_site = Site.objects.get_current()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 47, in get_current
+    current_site = self.get(pk=sid)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/manager.py", line 151, in get
+    return self.get_queryset().get(*args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 301, in get
+    num = len(clone)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 77, in __len__
+    self._fetch_all()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 854, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 220, in iterator
+    for row in compiler.results_iter():
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 709, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 781, in execute_sql
+    cursor = self.connection.cursor()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 157, in cursor
+    cursor = self.make_debug_cursor(self._cursor())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 129, in _cursor
+    self.ensure_connection()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/utils.py", line 99, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 112, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/postgresql_psycopg2/base.py", line 116, in get_new_connection
+    return Database.connect(**conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/psycopg2/__init__.py", line 164, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, async=async)
+OperationalError: could not connect to server: Connection refused
+	Is the server running on host "localhost" (::1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (127.0.0.1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (fe80::1) and accepting
+	TCP/IP connections on port 5432?
+
+Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/debug.py", line 75, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/decorators.py", line 99, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/cache.py", line 52, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/views.py", line 49, in login
+    current_site = get_current_site(request)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 103, in get_current_site
+    current_site = Site.objects.get_current()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 47, in get_current
+    current_site = self.get(pk=sid)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/manager.py", line 151, in get
+    return self.get_queryset().get(*args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 301, in get
+    num = len(clone)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 77, in __len__
+    self._fetch_all()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 854, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 220, in iterator
+    for row in compiler.results_iter():
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 709, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 781, in execute_sql
+    cursor = self.connection.cursor()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 157, in cursor
+    cursor = self.make_debug_cursor(self._cursor())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 129, in _cursor
+    self.ensure_connection()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/utils.py", line 99, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 112, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/postgresql_psycopg2/base.py", line 116, in get_new_connection
+    return Database.connect(**conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/psycopg2/__init__.py", line 164, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, async=async)
+OperationalError: could not connect to server: Connection refused
+	Is the server running on host "localhost" (::1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (127.0.0.1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (fe80::1) and accepting
+	TCP/IP connections on port 5432?
+
+Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/debug.py", line 75, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/decorators.py", line 99, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/cache.py", line 52, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/views.py", line 49, in login
+    current_site = get_current_site(request)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 103, in get_current_site
+    current_site = Site.objects.get_current()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 47, in get_current
+    current_site = self.get(pk=sid)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/manager.py", line 151, in get
+    return self.get_queryset().get(*args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 301, in get
+    num = len(clone)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 77, in __len__
+    self._fetch_all()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 854, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 220, in iterator
+    for row in compiler.results_iter():
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 709, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 781, in execute_sql
+    cursor = self.connection.cursor()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 157, in cursor
+    cursor = self.make_debug_cursor(self._cursor())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 129, in _cursor
+    self.ensure_connection()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/utils.py", line 99, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 112, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/postgresql_psycopg2/base.py", line 116, in get_new_connection
+    return Database.connect(**conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/psycopg2/__init__.py", line 164, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, async=async)
+OperationalError: could not connect to server: Connection refused
+	Is the server running on host "localhost" (::1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (127.0.0.1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (fe80::1) and accepting
+	TCP/IP connections on port 5432?
+
+Internal Server Error: /accounts/login/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/debug.py", line 75, in sensitive_post_parameters_wrapper
+    return view(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/decorators.py", line 99, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/decorators/cache.py", line 52, in _wrapped_view_func
+    response = view_func(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/views.py", line 49, in login
+    current_site = get_current_site(request)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 103, in get_current_site
+    current_site = Site.objects.get_current()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/sites/models.py", line 47, in get_current
+    current_site = self.get(pk=sid)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/manager.py", line 151, in get
+    return self.get_queryset().get(*args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 301, in get
+    num = len(clone)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 77, in __len__
+    self._fetch_all()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 854, in _fetch_all
+    self._result_cache = list(self.iterator())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/query.py", line 220, in iterator
+    for row in compiler.results_iter():
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 709, in results_iter
+    for rows in self.execute_sql(MULTI):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/models/sql/compiler.py", line 781, in execute_sql
+    cursor = self.connection.cursor()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 157, in cursor
+    cursor = self.make_debug_cursor(self._cursor())
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 129, in _cursor
+    self.ensure_connection()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/utils.py", line 99, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 124, in ensure_connection
+    self.connect()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/__init__.py", line 112, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/db/backends/postgresql_psycopg2/base.py", line 116, in get_new_connection
+    return Database.connect(**conn_params)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/psycopg2/__init__.py", line 164, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, async=async)
+OperationalError: could not connect to server: Connection refused
+	Is the server running on host "localhost" (::1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (127.0.0.1) and accepting
+	TCP/IP connections on port 5432?
+could not connect to server: Connection refused
+	Is the server running on host "localhost" (fe80::1) and accepting
+	TCP/IP connections on port 5432?
+
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 318, in resolve
+    for pattern in self.url_patterns:
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 346, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 341, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/importlib.py", line 40, in import_module
+    __import__(name)
+  File "/Users/sasha/simplegis-master/simplegis/urls.py", line 14, in <module>
+    url(r'^', include('sticktomap.urls')),
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/conf/urls/__init__.py", line 26, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/importlib.py", line 40, in import_module
+    __import__(name)
+  File "/Users/sasha/simplegis-master/sticktomap/urls.py", line 2, in <module>
+    from sticktomap import views
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 50
+    except Track.DoesNotExist:
+         ^
+SyntaxError: invalid syntax
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 318, in resolve
+    for pattern in self.url_patterns:
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 346, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 341, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/importlib.py", line 40, in import_module
+    __import__(name)
+  File "/Users/sasha/simplegis-master/simplegis/urls.py", line 14, in <module>
+    url(r'^', include('sticktomap.urls')),
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/conf/urls/__init__.py", line 26, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/importlib.py", line 40, in import_module
+    __import__(name)
+  File "/Users/sasha/simplegis-master/sticktomap/urls.py", line 2, in <module>
+    from sticktomap import views
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 50
+    except Track.DoesNotExist:
+         ^
+SyntaxError: invalid syntax
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 101, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 318, in resolve
+    for pattern in self.url_patterns:
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 346, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/urlresolvers.py", line 341, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/importlib.py", line 40, in import_module
+    __import__(name)
+  File "/Users/sasha/simplegis-master/simplegis/urls.py", line 14, in <module>
+    url(r'^', include('sticktomap.urls')),
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/conf/urls/__init__.py", line 26, in include
+    urlconf_module = import_module(urlconf_module)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/utils/importlib.py", line 40, in import_module
+    __import__(name)
+  File "/Users/sasha/simplegis-master/sticktomap/urls.py", line 2, in <module>
+    from sticktomap import views
+  File "/Users/sasha/simplegis-master/sticktomap/views.py", line 50
+    except Track.DoesNotExist:
+         ^
+SyntaxError: invalid syntax
+Internal Server Error: /accounts/register/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 79, in dispatch
+    return super(RegistrationView, self).dispatch(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 87, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 35, in post
+    return self.form_valid(request, form)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 82, in form_valid
+    new_user = self.register(request, **form.cleaned_data)
+  File "/Users/sasha/simplegis-master/customuser/views.py", line 23, in register
+    username, email, password, birthdate, site)
+TypeError: create_inactive_user() takes at least 7 arguments (6 given)
+Internal Server Error: /accounts/register/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 79, in dispatch
+    return super(RegistrationView, self).dispatch(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 87, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 35, in post
+    return self.form_valid(request, form)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 82, in form_valid
+    new_user = self.register(request, **form.cleaned_data)
+  File "/Users/sasha/simplegis-master/customuser/views.py", line 23, in register
+    username, email, password, birthdate, site)
+  File "/Users/sasha/simplegis-master/registration/models.py", line 104, in create_inactive_user
+    new_user = User.objects.create_user(username, email, password, birthdate=birthdate, city=city)
+NameError: global name 'city' is not defined
+Internal Server Error: /accounts/register/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 79, in dispatch
+    return super(RegistrationView, self).dispatch(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 87, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 35, in post
+    return self.form_valid(request, form)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 82, in form_valid
+    new_user = self.register(request, **form.cleaned_data)
+  File "/Users/sasha/simplegis-master/customuser/views.py", line 23, in register
+    username, email, password, birthdate, site)
+  File "/Users/sasha/simplegis-master/registration/models.py", line 111, in create_inactive_user
+    registration_profile.send_activation_email(site)
+  File "/Users/sasha/simplegis-master/registration/models.py", line 291, in send_activation_email
+    self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/models.py", line 413, in email_user
+    send_mail(subject, message, from_email, [self.email])
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/__init__.py", line 50, in send_mail
+    connection=connection).send()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/message.py", line 274, in send
+    return self.get_connection(fail_silently).send_messages([self])
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/backends/smtp.py", line 87, in send_messages
+    new_conn_created = self.open()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/backends/smtp.py", line 48, in open
+    local_hostname=DNS_NAME.get_fqdn())
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/smtplib.py", line 251, in __init__
+    (code, msg) = self.connect(host, port)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/smtplib.py", line 311, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/smtplib.py", line 286, in _get_socket
+    return socket.create_connection((host, port), timeout)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/socket.py", line 571, in create_connection
+    raise err
+error: [Errno 61] Connection refused
+Internal Server Error: /accounts/register/
+Traceback (most recent call last):
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/handlers/base.py", line 114, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 79, in dispatch
+    return super(RegistrationView, self).dispatch(request, *args, **kwargs)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/views/generic/base.py", line 87, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 35, in post
+    return self.form_valid(request, form)
+  File "/Users/sasha/simplegis-master/registration/views.py", line 82, in form_valid
+    new_user = self.register(request, **form.cleaned_data)
+  File "/Users/sasha/simplegis-master/customuser/views.py", line 23, in register
+    username, email, password, birthdate, site)
+  File "/Users/sasha/simplegis-master/registration/models.py", line 111, in create_inactive_user
+    registration_profile.send_activation_email(site)
+  File "/Users/sasha/simplegis-master/registration/models.py", line 291, in send_activation_email
+    self.user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/contrib/auth/models.py", line 413, in email_user
+    send_mail(subject, message, from_email, [self.email])
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/__init__.py", line 50, in send_mail
+    connection=connection).send()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/message.py", line 274, in send
+    return self.get_connection(fail_silently).send_messages([self])
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/backends/smtp.py", line 87, in send_messages
+    new_conn_created = self.open()
+  File "/Users/sasha/virtual_envs/dplm/lib/python2.7/site-packages/django/core/mail/backends/smtp.py", line 48, in open
+    local_hostname=DNS_NAME.get_fqdn())
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/smtplib.py", line 251, in __init__
+    (code, msg) = self.connect(host, port)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/smtplib.py", line 311, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/smtplib.py", line 286, in _get_socket
+    return socket.create_connection((host, port), timeout)
+  File "/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/socket.py", line 571, in create_connection
+    raise err
+error: [Errno 61] Connection refused

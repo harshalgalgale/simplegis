@@ -1,12 +1,13 @@
 # Django settings for simplegis project.
 
 import os
+ROOT_PATH = os.path.dirname(os.path.dirname(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('sasha', 'leinst@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -15,7 +16,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gisdb',                      # Or path to database file if using sqlite3.
-        'USER': 'gisadmin',                      # Not used with sqlite3.
+        'USER': 'sasha',                      # Not used with sqlite3.
         'PASSWORD': 'qwerty',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
@@ -51,7 +52,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = '/home/lein/work/simplegis/media'
+MEDIA_ROOT = os.path.join(ROOT_PATH, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -62,7 +63,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/home/lein/work/simplegis/static'
+STATIC_ROOT = os.path.join(ROOT_PATH, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -73,7 +74,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/lein/work/simplegis/sticktomap/static',
+    os.path.join(ROOT_PATH, 'sticktomap/static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -127,6 +128,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'sticktomap',
+    'south',
+    'customuser',
+    'registration',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -138,26 +142,75 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
+         'require_debug_false': {
+             '()': 'django.utils.log.RequireDebugFalse'
+         }
+     },
     'handlers': {
+        # Include the default Django email handler for errors
+        # This is what you'd get without configuring logging at all.
         'mail_admins': {
+            'class': 'django.utils.log.AdminEmailHandler',
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
+             # But the emails are plain text by default - HTML is nicer
+            'include_html': True,
+        },
+        # Log to a text file that can be rotated by logrotate
+        'logfile': {
+            'class': 'logging.handlers.WatchedFileHandler',
+            'filename': os.path.join(ROOT_PATH, 'errorlog.log')
+        },
     },
     'loggers': {
+        # Again, default Django configuration to email unhandled exceptions
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+        # Might as well log any errors anywhere else in Django
+        'django': {
+            'handlers': ['logfile'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        # Apps 
+        'sticktomap': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG', # Or maybe INFO or WARNING
+            'propagate': False
+        },
+
+        'customuser': {
+            'handlers': ['logfile'],
+            'level': 'DEBUG', # Or maybe INFO or WARNING
+            'propagate': False
+        },
+    },
 }
 
 
-LOGIN_URL = '/login'
-LOGIN_REDIRECT_URL = '/profile'
+TEMPLATE_CONTEXT_PROCESSORS = (
+  'django.core.context_processors.request',
+  'django.contrib.auth.context_processors.auth',
+)
+
+
+
+# django-registration settings
+ACCOUNT_ACTIVATION_DAYS = 2
+
+AUTH_USER_EMAIL_UNIQUE = True
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = 'leinst@gmail.com'
+
+AUTH_USER_MODEL = "customuser.UserProfile"
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache" 

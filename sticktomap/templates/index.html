@@ -3,121 +3,429 @@
 
 {% block title %} - Главная{% endblock %}
 
+
+
 {% block extrahead %}
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script src="http://api-maps.yandex.ru/2.0-stable/?load=package.full&lang=ru-RU" type="text/javascript"></script>
+<!-- Leaflet -->
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+<!-- Leaflet.Draw -->
+<link rel='stylesheet' href='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.css' />
+<!-- Leaflet.Label -->
+<link rel="stylesheet" href="/static/css/leaflet.label.css" />
+
+
+<!-- Styles -->
+<link rel="stylesheet" href="/static/css/main.css" />
+
+
+
+
+<!-- Leaflet -->
+<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+<!-- Leaflet.Draw -->
+<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-draw/v0.2.2/leaflet.draw.js'></script>
+
+<!-- Leaflet.Label -->
+<script src="/static/js/leaflet.label.js"></script>
+
+
+
+
+<!-- YandexMaps API -->
+<script src="//api-maps.yandex.ru/2.0/?load=package.full&lang=ru-RU" type="text/javascript"></script>
+<script src="/static/js/Yandex.js"></script>
+<!-- GoogleMaps API -->
+<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+<script src="/static/js/Google.js"></script>
+
+
+<!-- Scripts -->
+<script src="/static/js/ToGeoJSON.js"></script>
+<script src="/static/js/jscolor.js"></script>
+<script src="/static/js/typeahead.bundle.js"></script>
+
+
+<!-- Scripts -->
+<script src="/static/js/TrackLoader.js"></script>
+<script src="/static/js/Popup.js"></script>
+<script src="/static/js/ImageUpload.js"></script>
+
+
+
 <script type="text/javascript">
-    {% block jquery %}
+{% block jquery %}
+    
     $('#nav-main').addClass('active');
+
+    
+    $('.dropdown-toggle').dropdown();
+    $('.dropdown-menu input, .dropdown-menu label').click(function(e) {
+        console.log(e);
+        e.stopPropagation();
+    });
     {% endblock %}
     
-    ymaps.ready(init);
-    var myMap; 
-
-       
-
-    function init() { 
-
-        // Инициализация карты
-        myMap = new ymaps.Map ("map", {
-            center: [ymaps.geolocation.latitude, ymaps.geolocation.longitude],
-            zoom: 7,
-            behaviors: ['default', 'scrollZoom']
-        }); 
+    
+    function trackList(id, name, color, map, layerOptions, drawnItems) {
+        var d = document.createElement('div');
+        d.id = id+'track';
+        d.className = 'track';
+        d.innerHTML = name;
+        d.style.backgroundColor = '#'+color;
+        var layer;
         
-
-        // Отрисовка переданных из бд меток
-        {% for placemark in placemarks %}
-        var myPlacemark = new ymaps.Placemark([{{placemark.lat}},{{placemark.lon}}], {
-            iconContent: "{{placemark.name}}", 
-            balloonContent: "{{placemark.descr}}",   
-        }, { balloonContentLayout: ymaps.templateLayoutFactory.createClass([
-                    '<div id="menu" style="padding-right: 20px; padding-left: 20px">',
-                        '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
-                        '</div>',
-                        '<div id="menu-list">',
-                        '<h4>$[geometry.coordinates]</h4>',
-                            '<label class="control-label">Название</label>',
-                            '<input class="input-xlarge" maxlength="100" type="text" name="name" tabindex="1" required="required" placeholder="Название объекта" value="$[properties.iconContent]"/>',
+        var clear = document.createElement('div');
+        var csrf = document.createElement('div');
+        csrf.innerHTML = '<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">';
+        csrf.style.display = 'none';
                     
-                            '<label class="control-label">Описание</label>',
-                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="description" tabindex="2" required="required" placeholder="Описание объекта">$[properties.balloonContent]</textarea>',
-                        '</div>',
-                        '<button type="submit" id="save" class="btn btn-small btn-primary">Сохранить</button>',
-                        '<button type="delete" id="delete" class="btn btn-small" style="margin-left: 10px">Удалить</button>',
-                    '</div>',
+        clear.innerHTML = '<p>Скрыть</p>';
 
-                    '<form id="add-image-form" method="POST" action="{% url sticktomap.views.add_image %}" enctype="multipart/form-data">',
-                        '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">',
-                        '</div>',
-                        '<div style="display:none">',
-                            
-                                '<input type="hidden" id="id" value="$[properties.id]">',
-                                '<input type="file" class="file" id="upload-image" />',
-                                '<button type="submit" id="image" class="btn btn-small" style="margin-left: 10px">Отправить</button>',
-                             
-                        '</div>',
-                    '</form>'].join(' '), {
-                build: function (e) {
-                    this.constructor.superclass.build.call(this);
+        clear.style.display = 'none';
+        
+        var del = document.createElement('div');
+        del.innerHTML = '<p>Удалить</p>';
 
-                    geoObject = this.geoObject = this.getData().geoObject;
-                    
-
-
-                    
-                    $('#save').bind('click', $.proxy(this.onSave,this));
-                    $('#delete').bind('click', $.proxy(this.onDelete,this));
-                    $('#image').bind('click', $.proxy(this.onImage,this));
-
-                },
-                clear: function () {
-                    $('#save').unbind('click');
-                    $('#delete').unbind('click');
-                    this.constructor.superclass.clear.call(this);
-                },
-                onDelete: function () {
-                    $.post("{% url sticktomap.views.delete %}", {
-                            id: geoObject.properties.get('id')
-                        }, function(data){
-                                alert("Метка удалена из базы данных.");
-                                myMap.geoObjects.remove(geoObject);
-                        });
-                },
-                onSave: function () {
-                    if (!$('input[name="name"]').val() || !$('textarea[name="description"]').val()) {
-                        alert("Поля должны быть заполнены.");
-                    }
-                    else {
-                        geoObject.properties.set({
-                            iconContent: $('input[name="name"]').val(),
-                            balloonContent: $('textarea[name="description"]').val(),                       
-                        });
-
-
-                        var geoobjectString = $('input[name="name"]').val() + ' ' + $('textarea[name="description"]').val() + ' ' + geoObject.properties.get('id');
-
-                        $.post("{% url sticktomap.views.update %}", {
-                            geoobjectString: geoobjectString
-                            }, function(data){
-                                alert("Метка сохранена в базе данных.");
-                        });
-                    }
-                      
-                },
-                onImage: function () {
-                    $('#add-image-form').ajaxForm();
-                } 
+        clear.onclick = function () {
+            if (map.hasLayer(layer)) {
+                map.removeLayer(layer);
             }
-        ),
-        preset: 'twirl#blueStretchyIcon', 
+
+            clear.style.display = 'none';
+        }
+
+
+        del.onclick = function() {
+                
+                var xhr = new XMLHttpRequest();
+        
+                xhr.onload = function (e) {
+                    if (e.target.status == 200) { 
+                        
+                        alert('Удален.');
+                        document.getElementById('tracks').removeChild(d);
+                        document.getElementById('tracks').removeChild(clear);
+                        document.getElementById('tracks').removeChild(del);
+                        document.getElementById('tracks').removeChild(csrf);
+                    } else {
+                        alert('Во время удаления произошла ошибка ' + e.target.status + ' ' + e.target.statusText);
+                    }
+
+
+                }
+                xhr.onerror = function() {
+                    alert("Ошибка " + e.target.status + " произошла во время удаления.");
+                }
+                xhr.open('POST', 'track_delete');
+
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                xhr.send(id);
+
+
+
 
         }
-        );
 
-        myPlacemark.properties.set({ id: {{placemark.id}} });
+        d.onclick = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'track?id='+id, false);
+            
+            xhr.onreadystatechange = function() {
+                console.log(xhr.status);
+                if (xhr.status == 200) {
+                    var content = JSON.parse(xhr.responseText);
+                    console.log(layerOptions);
+                    layerOptions.style = {color: '#' + color};
+                    layer = L.geoJson(content, layerOptions);
 
-        myMap.geoObjects.add(myPlacemark);
+                    if (layer.getLayers().length === 0) {
+                        throw new Error('GeoJSON не содержит подходящих слоев.');
+                    }
+
+                    layer.addTo(map);
+                    //drawnItems.addLayer(layer);
+                    
+
+                
+                } 
+                else {
+                    alert('Произошла ошибка:' + xhr.status);
+                }
+            }
+
+            xhr.send(null);
+
+            clear.style.display = 'block';
+            
+        }
+            
+        document.getElementById('tracks').appendChild(d);
+        document.getElementById('tracks').appendChild(csrf);
+        document.getElementById('tracks').appendChild(clear);
+        document.getElementById('tracks').appendChild(del);
+        
+    }
+
+
+   
+    
+    var ocm;
+    var markers = [];
+    function init() {
+        
+        customMarker = L.Marker.extend({
+            options: {
+                id: '',
+                name: '',
+                description: ''
+            }
+        });
+
+        L.Marker = customMarker;
+
+
+        //var lat = ymaps.geolocation.latitude;
+        //var lon = ymaps.geolocation.longitude;
+        maplink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        ocmlink = '<a href="http://thunderforest.com/">Thunderforest</a>';
+
+        ocm = new L.TileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+            attribution: '&copy; '+maplink+' Contributors & '+ocmlink
+        });
+
+        
+
+        var ggl = new L.Google(),
+            yndx = new L.Yandex();
+
+        var map = L.map('map', {
+            //drawControl: true,
+            center: new L.LatLng(55.79083, 49.11450), 
+            zoom: 10, 
+            zoomAnimation: false,
+            layers: [ggl, yndx, ocm] 
+        });
+
+        var baseMaps = {
+            
+            "Yandex": yndx,
+            "Google": ggl
+        };
+
+        var overlayMaps = {
+            "OpenCycleMaps": ocm
+        };
+
+        map.attributionControl.setPosition('bottomleft');
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map); 
+
+
+        
+
+        // Initialise the FeatureGroup to store editable layers
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        // Initialise the draw control and pass it the FeatureGroup of editable layers
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
+
+        map.on('draw:created', function (e) {
+            var type = e.layerType,
+                layer = e.layer,
+                options;
+
+            console.log(layer);
+            if (type === 'marker') {
+                console.log('draw');
+                console.log(e);
+                // Do marker specific actions
+                onMapClick(layer, e);
+                map.addLayer(layer);
+            } else {
+
+                /////////LOAD SERVER 
+
+                ///////////////////////////////
+                dialog();
+            
+                $( "#track_upload").on('click', function(e) {
+                    options = {
+                        color: $("#track_color").val(),
+                        name: $("#track_name").val(),
+                        descr: $("#track_descr").val(),
+                    };
+                    load_temp();
+                    //console.log(file);
+
+                });
+
+                var load_temp = function () {
+                var json_object = {
+                        track: layer.toGeoJSON(),
+                        options: options,
+                    };
+
+
+
+
+
+
+                var xhr = new XMLHttpRequest();
+
+                xhr.onload = function (e) {
+                    console.log(this);
+                    if (e.target.status == 200) { 
+                        var response = JSON.parse(e.target.responseText);   
+                        //
+                        alert('Сохранен на сервере.');
+                    } else {
+                        alert('Во время загрузки на сервер произошла ошибка ' + e.target.status + ' ' + e.target.statusText);
+                    }
+                    trackListAdd(response);
+                }
+
+
+                xhr.onerror = function() {
+                        alert("Ошибка " + e.target.status + " произошла во время загрузки на сервер.");
+                    }
+                    xhr.open('POST', 'track_save');
+
+                    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                    console.log(json_object);
+                    xhr.send(JSON.stringify(json_object));
+                }
+
+
+
+                ///////////////////////////////
+
+            
+
+                // Do whatever else you need to. (save to db, add to map etc)
+            
+                drawnItems.addLayer(layer); 
+            }
+        });
+        /*
+        map.on('draw:created', function (e) {
+            console.log(e.layer.toGeoJSON());
+        });*/
+
+
+
+        var style_ = {color:'#000000', opacity: 0.3, fillOpacity: 1.0, weight: 3, clickable: false};
+        var  layerOptions_ = {style: style,
+            pointToLayer: function (data, latlng) {
+                return L.circleMarker(latlng, {style: style});
+            }
+        };
+        
+        {% for t in tracks %}
+        trackList({{t.id}},'{{t.name}}', '{{t.color}}', map, layerOptions_, drawnItems);
+        {% endfor %}
+        
+
+
+        
+        // Отрисовка переданных из бд меток
+        {% for placemark in placemarks %}
+
+        
+        var marker = new L.Marker([{{placemark.lat}}, {{placemark.lon}}], {
+            id: {{placemark.id}},
+            name: '{{placemark.name}}',
+            description: '{{placemark.descr}}',
+        }).bindLabel('{{placemark.name}}', { noHide: true }).addTo(map);
+
+        {% if placemark.img %} 
+        marker.photo = '{{placemark.img.url}}';
+        {% else %}
+        marker.photo = '';
+        {% endif %}
+
+        console.log(marker.photo);
+        
+
+        markers[{{placemark.id}}] = marker;
+
+
+        // Create an element to hold all your text and markup
+        // Insert whatever you want into the container, using whichever approach you prefer
+
+
+        var container = setEditFormPopup(marker);
+
+
+
+        // Delegate all event handling for the container itself and its contents to the container
+        function setEventHandlingPopup(container){
+            container.on('click', '#delete', function (e) {
+                    $.post("{% url 'placemark_delete' %}", {
+                            id: $('input[id="id"]').val()
+                        }, function(data){
+                                alert("Метка удалена из базы данных.");
+                                map.removeLayer(markers[$('input[id="id"]').val()]);
+                        }
+                    )
+                });
+
+            container.on('click', '#save', function (e) {
+                
+                
+                if (!$('input[name="name"]').val() || !$('textarea[name="description"]').val()) {
+                    alert("Поля должны быть заполнены.");
+                }
+                else {
+                        marker.options.name =  $('input[name="name"]').val();
+                        marker.options.description = $('textarea[name="description"]').val();                      
+                        console.log(marker);
+                        //var placemarkString = $('input[name="name"]').val() + ' ' + $('textarea[name="description"]').val() + ' ' + $('input[id="id"]').val();
+
+                        $.post("{% url 'placemark_update' %}", {
+                            name: $('input[name="name"]').val(),
+                            descr: $('textarea[name="description"]').val(),
+                            id: $('input[id="id"]').val(),
+                            }, function(data) {
+                                alert("Метка сохранена в базе данных.");
+                                markers[$('input[id="id"]').val()].updateLabelContent($('input[name="name"]').val());
+                                markers[$('input[id="id"]').val()].closePopup();
+                            }
+                        );
+                }
+            });
+
+        }
+
+
+
+        container.keydown(function(e) { 
+            console.log("fired!");       
+            if (e.keyCode == 27) {
+                  
+                markers[$('input[id="id"]').val()].closePopup();
+            }
+        });
+
+        setEventHandlingPopup(container);
+
+        var popupOptions = {
+            'minWidth': '491px',
+            'maxWidth': '491px',
+        }
+
+
+        // Insert the container into the popup
+        marker.bindPopup(container[0], popupOptions);
+
         {% endfor %}
 
 
@@ -130,7 +438,6 @@
                         var cookies = document.cookie.split(';');
                         for (var i = 0; i < cookies.length; i++) {
                             var cookie = jQuery.trim(cookies[i]);
-                            // Does this cookie string begin with the name we want?
                             if (cookie.substring(0, name.length + 1) == (name + '=')) {
                                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                                 break;
@@ -146,142 +453,218 @@
             }
         });
 
-        myMap.events.add('click', function (e) {
-            if (!myMap.balloon.isOpen()) {
+        
 
-                var coords = e.get('coordPosition');
-                myMap.balloon.open(coords, {                        
-                    contentBody:   ['<div id="menu">',
-                                    '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></div>',
-                                        '<div id="menu_list">',
-                                            '<label>Название</label>',
-                                            ' <input type="text" maxlength="100" class="input-xlarge" name="icon_text" required="required" placeholder="Название объекта" /><br />',
-                                            '<label>Описание</label>',
-                                            '<textarea rows="3" maxlength="500" class="input-xlarge" name="balloon_text" tabindex="2" required="required" placeholder="Описание объекта"></textarea>',
-                                        '</div>',
-                                        '<button type="submit" class="btn btn-success">Сохранить</button>',
-                                    '</div>'
-                ].join(' ')});
-                     
-                var myPlacemark = new ymaps.Placemark(coords);
- 
-                //Сохраняем данные из формы     
-                $('#menu button[type="submit"]').click(function () {
-                    var iconText = $('input[name="icon_text"]').val(),
-                        balloonText = $('textarea[name="balloon_text"]').val();
-                    if (!$('input[name="icon_text"]').val() || !$('textarea[name="balloon_text"]').val()) {
-                        alert("Поля должны быть заполнены.");
-                    }
-                    else {                
-                        //Добавляем метку на карту  
-                        myMap.geoObjects.add(myPlacemark);
 
-                        //Изменяем свойства метки и балуна
-                        myPlacemark.properties.set({
-                            iconContent: iconText,
-                            balloonContent: balloonText,                       
-                        });
-                        
-                        var placemarkString = iconText + ' ' + balloonText + ' ' + coords[0].toPrecision(6) + ' ' + coords[1].toPrecision(6); 
 
-                        $.post("{% url sticktomap.views.save %}", {
-                            placemarkString: placemarkString
-                            }, function(data){
-                                alert("Метка добавлена в базу данных.");
-                                myPlacemark.properties.set({ id: data["id"] });
-                        });
-                    
-                        //Закрываем балун
-                        myMap.balloon.close(); 
-                    }
-                });       
-                
-            } else {
-                myMap.balloon.close();
-            }
+        function onMapClick(marker, e) {
+            //var marker = new customMarker(e.latlng).addTo(map);
+            var container = $('<div />');
+            container.html(['<div id="menu">',
+                                '<div style="display:none"><input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></div>',
+                                    '<div id="menu_list">',
+                                        '<label>Название</label>',
+                                        ' <input type="text" maxlength="100" class="input-xlarge" name="name" required="required" placeholder="Название объекта" /><br />',
+                                        '<label>Описание</label>',
+                                        '<textarea rows="3" maxlength="500" class="input-xlarge" name="descr" tabindex="2" required="required" placeholder="Описание объекта"></textarea>',
+                                    '</div>',
+                                    '<button type="submit" class="btn btn-success">Сохранить</button>',
+                                '</div>',
+                            '</div>'
+                        ].join(' '));
+
+            container.on('click', '#menu button[type="submit"]', function () {
+                            var name = $('input[name="name"]').val(),
+                                descr= $('textarea[name="descr"]').val();
+                            if (!name || !descr) {
+                                alert("Поля должны быть заполнены.");
+                            }
+                            else {                
+                                //Добавляем метку на карту          
+
+                                
+                                //var placemarkString = name + ' ' + descr + ' ' + e.layer._latlng.lat.toPrecision(6) + ' ' + e.layer._latlng.lng.toPrecision(6); 
+
+                                $.post("{% url 'placemark_save' %}", {
+                                    name: name,
+                                    descr: descr,
+                                    lat: e.layer._latlng.lat.toPrecision(6),
+                                    lon: e.layer._latlng.lng.toPrecision(6),
+                                    }, function(data){
+
+                                        alert("Метка добавлена в базу данных.");
+                                        marker.options.name = name;
+                                        marker.options.description = descr;
+                                        marker.options.id = data["id"];
+                                        marker.photo = '';
+                                        markers[data["id"]] = marker;
+                                        var container = setEditFormPopup(marker);
+                                        setEventHandlingPopup(container);
+                                        marker.closePopup();
+                                        marker.bindPopup(container[0], popupOptions).updateLabelContent(marker.options.name);
+
+                                });
+                            
+                                 
+                            }
+                        })
+            
+
+            marker.bindPopup(container[0]).bindLabel('Новая метка', { noHide: true });
+            console.log(marker);
+
+
+        }
+
+        map.on('popupopen', function(e) {
+            var container = e.popup._content;
+            console.log(e.popup._content);
+            container.focus();
+        });
+        
+
+
+        ocm.setOpacity(0.5);
+
+        var style = {color:'red', opacity: 0.3, fillOpacity: 1.0, weight: 3, clickable: false};
+        L.Control.trackLoaderControl({
+            fitBounds: true,
+            layerOptions: {style: style,
+                           pointToLayer: function (data, latlng) {
+                              return L.circleMarker(latlng, {style: style});
+                           }},
+            LABEL: '<i style="" class="icon-folder-open"></i>'
+        }).addTo(map);
+
+        L.control.scale({imperial: false}).addTo(map);
+
+        
+        var features = [];
+        markers.forEach(function (m) {
+
+            var id = m.options.id;
+            var name = m.options.name;
+            var coords = m.getLatLng();
+            var lng = coords.lng;
+            var lat = coords.lat;
+            
+            
+            features.push({id: id, value: name, lat: lat, lng: lng});
+          
+            $("#featurelist table").append('<tr><td><a href="#" onclick="markers['+id+'].openPopup(); return false;">'+name+'</a></td></tr>');
+            
         });
 
-        
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+                var matches, substringRegex;
+             
+                // массив названий с совпадающими подстроками
+                matches = [];
+             
+                // регулярное выражение, соответствующее вхождению подстроки
+                substrRegex = new RegExp(q, 'i');
+             
+                // проход по массиву меток и поиск вхождений
+                $.each(strs, function(i, str) {
+                    
+                    if (substrRegex.test(str.value)) {
+                        // добавляем строки для автозаполнения
+                        matches.push({ value: str.value });
+                  }
+                });
+             
+                cb(matches);
+            };
+        };
 
         
 
+     
+        $('.typeahead').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'features',
+            displayKey: 'value',
+            source:  substringMatcher(features)
+        }).bind('typeahead:selected', function(obj, datum, name) {      
+            map.setView([datum.lat, datum.lng], 18);
+            markers[datum.id].openPopup();   
+
+        });
+
+      
+        
+
+        
+            
         
     }
 
-
-    function BuildRoute() {
-        var point = [],
-        i = 0,
-        p,
-        it = myMap.geoObjects.getIterator(); 
-
-        while (p = it.getNext()) {
-            point[i] = p.geometry.getCoordinates();
-            i++;
-        }
-    
-        ymaps.route(point, {
-            mapStateAutoApply: true
-        }).then(function (r) {
-            route = r;
-            route.getPaths().options.set({
-            // в балуне выводим только информацию о времени движения с учетом пробок
-            balloonContenBodyLayout: ymaps.templateLayoutFactory.createClass('$[properties.humanJamsTime]'),
-            // можно выставить настройки графики маршруту
-            strokeColor: '0000ffff',
-            opacity: 0.9});
-            
-            var moveList = '</br>Трогаемся.</br>',
-            way,
-            segments;
-            // Получаем массив путей.
-            for (var i = 0; i < route.getPaths().getLength(); i++) {
-                way = route.getPaths().get(i);
-                segments = way.getSegments();
-                for (var j = 0; j < segments.length; j++) {
-                    var street = segments[j].getStreet();
-                    moveList += ('Едем ' + segments[j].getHumanAction() + (street ? ' на ' + street : '') + ', проезжаем ' + segments[j].getLength() + ' м.');
-                    moveList += '</br>'
-                }
-            }
-            moveList += 'Останавливаемся.';
-            // Выводим маршрутный лист.
-            $('#info').append(moveList);
-            
-            
-            myMap.geoObjects.add(route);
-
-        }, function (error) {
-            alert('Возникла ошибка: ' + error.message);
-        })
-    } 
-
-    
-
-    function ResetRoute() {
-        myMap.geoObjects.remove(route);
-        $('#info').text("");
-        myMap.setCenter([ymaps.geolocation.latitude, ymaps.geolocation.longitude], 7);
+    function updateOpacity(value) {
+        ocm.setOpacity(value);
     }
 
-
+    
+    window.onload = init;
 
 </script>
 {% endblock %}
 
 
+{% block extranav %}
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Поиск меток</a>
+    <div class="dropdown-menu" style="padding: 15px; ">   
+        <div>
+            <p><input class="typeahead" type="text" placeholder="Название метки"></p>
+            <div id="featurelist">
+                <table></table>
+            </div>
+        </div>           
+    </div>
+</li>
+
+<li class="dropdown">
+    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Маршруты</a>
+    <div class="dropdown-menu" style="padding: 15px; ">              
+        <div id="tracks"></div>
+    </div>
+</li>
+
+{% endblock %}
+
+
 {% block content %}
-<div class="container-fluid">
-<div class="row-fluid">
-    <div class="span8">
-        <div id="map" style="width: 750px; height: 600px"></div>
+    
+
+    <div  id="map"></div>
+    
+    <input  id="slide" type="range" min="0" max="1" step="0.1" value="0.5" onchange="updateOpacity(this.value)">
+
+    
+
+
+    <div id="track_popup">
+
+        <form>
+            <fieldset>
+                <div style="display:none">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                </div>
+                <label for="track_name">Название</label>
+                <input type="text" maxlength="100" name="track_name" id="track_name" required="required" placeholder="Название маршрута" class="input-xlarge">
+                <label for="track_descr">Описание</label>
+                <textarea rows="3" maxlength="500"  name="track_descr" id="track_descr" placeholder="Описание маршрута" class="input-xlarge"></textarea>
+                <label for="track_descr">Цвет</label>
+                <input class="color input" name="track_color" id="track_color" value="#66ff00">
+                <button type="button" class="btn btn-xs" id="track_upload"><i class="icon-circle-arrow-up"></i></button>
+            
+            </fieldset>
+        </form>
     </div>
-    <div class="span4">
-        <button id="build" class="btn btn-success" onclick="BuildRoute()" >Построить маршрут</button>
-        <button id="reset" class="btn btn-cancel" onclick="ResetRoute()" >Очистить</button>
-        <div id="info" style="width: 400px; height: 600px"></div>    
-    </div>
-</div>
-</div>
 
 {% endblock %}

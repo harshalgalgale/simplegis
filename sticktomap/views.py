@@ -1,147 +1,119 @@
 # -*- coding: utf-8 -*-
 
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.http import is_safe_url
-from django.conf import settings
-from django.template.response import TemplateResponse
-from django.template import RequestContext, Context
-from django.template.loader import render_to_string
 from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import login as auth_login, logout as auth_logout, REDIRECT_FIELD_NAME
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import UserManager
-from django.shortcuts import redirect, render, render_to_response
-from sticktomap.models import Placemark
-from sticktomap.forms import UploadImageForm
-from django.core.urlresolvers import resolve
+from django.shortcuts import render
+from sticktomap.models import Placemark, Track
 import json
+
+from django.views.generic import View
 
 
 @login_required()
 @csrf_protect
 def index(request):
-    form = UploadImageForm()
     placemarks = Placemark.objects.filter(user=request.user)
-    return render_to_response('index.html', {'placemarks': placemarks, 'form': form},
-                          context_instance=RequestContext(request))
-@csrf_protect
-@login_required(login_url='/login')
-def save(request):
-    if request.is_ajax():
-        name, descr, lat, lon = request.POST.get('placemarkString', '').split()
-        placemark = Placemark()
-        placemark.name = name
-        placemark.descr = descr
-        placemark.lat = lat
-        placemark.lon = lon
-        placemark.user = request.user
-        placemark.save()
-        json_response = json.dumps({"id": placemark.id})
+    tracks = Track.objects.filter(user=request.user).defer('track', 'descr')
+    return render(request, 'index.html', {'placemarks': placemarks, 'tracks': tracks})
+
+
+@login_required()
+@csrf_exempt
+def track_save(request):
+    if request.is_ajax:
+        t = Track()
+        json_data = json.loads(request.body)
+        t.name = json_data['options']['name']
+        t.descr = json_data['options']['descr']
+        t.color = json_data['options']['color']
+        t.track = json.dumps(json_data['track'])
+        t.user = request.user
+        t.save()
+        json_response = json.dumps({"id": t.id, "name": t.name, "color": t.color})
         return HttpResponse(json_response, content_type='application/json')
     else:
         return HttpResponse(status=400)
 
 
+@login_required
+def track_get(request):
+    json_response = Track.objects.get(id=int(request.GET.get('id',''))).track
+    return HttpResponse(json_response, content_type='application/json')
+
+@login_required
+@csrf_exempt
+def track_delete(request):
+    if request.is_ajax():
+        try:
+            track = Track.objects.get(id=int(request.body)).delete()
+        except Track.DoesNotExist:
+            HttpResponse(status=404)
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=400)
+
 @csrf_protect
 @login_required()
-def update(request):
+def placemark_save(request):
     if request.is_ajax():
-        name, descr, id = request.POST.get('geoobjectString', '').split()
-        placemark = Placemark.objects.get(id=int(id))
+        if request.POST:
+            placemark = Placemark()
+            placemark.name = request.POST.get('name', '')
+            placemark.descr = request.POST.get('descr', '')
+            placemark.lat = request.POST.get('lat', '')
+            placemark.lon = request.POST.get('lon', '')
+            placemark.user = request.user
+            placemark.save()
+            json_response = json.dumps({"id": placemark.id})
+            return HttpResponse(json_response, content_type='application/json')
+    else:
+        return HttpResponse(status=400)
+
+
+@csrf_protect
+@login_required()
+def placemark_update(request):
+    if request.is_ajax():
+        name = request.POST.get('name', '')
+        descr = request.POST.get('descr', '')
+        id = request.POST.get('id', '')
+        try:
+            placemark = Placemark.objects.get(id=int(id))
+        except Placemark.DoesNotExist:
+            return HttpResponse(status=404)
         placemark.name = name
         placemark.descr = descr
         placemark.save()
-        return HttpResponse()
+        return HttpResponse(status=200)
     else:
         return HttpResponse(status=400)
 
 @csrf_protect
 @login_required()
-def delete(request):
+def placemark_delete(request):
     if request.is_ajax():
-        placemark = Placemark.objects.get(id=int(request.POST.get('id', ''))).delete()
-        return HttpResponse()
+        try:
+            placemark = Placemark.objects.get(id=int(request.POST.get('id', ''))).delete()
+        except Placemark.DoesNotExist:
+            HttpResponse(status=404)
+        return HttpResponse(status=200)
     else:
         return HttpResponse(status=400)
 
-@csrf_protect
 @login_required()
-def add_image(request):
-    if request.method == 'POST':
-        p = Placemark.objects.get(id=int(request.POST.get('id','')))
-        p.img = request.FILES['image']
-        return HttpResponse(json.dumps([True]), mimetype='application/javascript')
-    else:
-        return HttpResponse(json.dumps([False]), mimetype='application/javascript')
-
-
-    
-
-def login(request):
-    if not request.user.is_authenticated():
-        return redirect('django.contrib.auth.views.login')
-    return redirect('sticktomap.views.index')
-
-def logout(request):
-    auth_logout(request)
-    return HttpResponseRedirect('/')
-
-@login_required()
-@sensitive_post_parameters()
-@csrf_protect
-@never_cache
-def profile(request):
-    if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-    else:
-        form = UserChangeForm(instance=request.user)
-    
-    return render_to_response( 'registration/profile.html', locals(), context_instance = RequestContext( request) )
-    
-
-    form = UserChangeForm()
-    context = {
-            'form': form
-    }
-    return TemplateResponse(request, 'registration/profile.html', context,
-                            current_app=None)
-
-@sensitive_post_parameters()
-@csrf_protect
-@never_cache
-def register(request, template_name='registration/register.html',
-          redirect_field_name=REDIRECT_FIELD_NAME,
-          user_creation_form=UserCreationForm,
-          current_app=None, extra_context=None):
-    """
-    Displays the registration form.
-    """
-    redirect_to = request.REQUEST.get(redirect_field_name, '')
-
-    if request.method == "POST":
-        form = user_creation_form(data=request.POST)
-        if form.is_valid():
-
-            # Ensure the user-originating redirection url is safe.
-            #if not is_safe_url(url=redirect_to, host=request.get_host()):
-            #    redirect_to = resolve(settings.LOGIN_REDIRECT_URL)
-
-            #create user
-            form.save()
-
-            return HttpResponse("<p>Вы успешно зарегистрированы.</p><p><a href=\"/\">На главную</a></p>")
-    else:
-        form = user_creation_form()
-
-    context = {
-            'form': form,
-            redirect_field_name: redirect_to,
-    }
-    return TemplateResponse(request, template_name, context,
-                            current_app=current_app)
+@csrf_exempt
+def placemark_img_upload(request, *args, **kwargs):
+        if request.is_ajax:
+            if request.FILES.has_key('file') and request.POST.has_key('id_upload'):
+                p = Placemark.objects.get(id=request.POST['id_upload'])
+                p.img = request.FILES['file']
+                p.save()
+                json_response = json.dumps({"img_url": p.img.url})
+                return HttpResponse(json_response, content_type='application/json')
+            else:
+                return HttpResponse(status=400)
+        else:
+            return HttpResponse(status=400)
